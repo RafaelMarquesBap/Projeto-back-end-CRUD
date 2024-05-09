@@ -148,6 +148,7 @@
                 <td><?php echo $Login; ?></td>
                 <td><?php echo $Senha; ?></td>
                 <td><?php echo "<a href='visualizar.php?id=$idUsuario'>Visualizar</a>"?></td>
+                <td><?php echo "<a href='editar.php?id=$idUsuario'>Editar</a>"?></td>
               </tr>
           <?php
             }
