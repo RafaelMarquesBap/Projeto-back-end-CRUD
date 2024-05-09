@@ -95,7 +95,6 @@
           Master
         </a>
         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-          <a class="dropdown-item" href="listar.php">Listar Usuários</a>
           <a class="dropdown-item" href="visualizar.php">Visualizar Usuários
           </a>
           <div class="dropdown-divider"></div>

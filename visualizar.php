@@ -65,24 +65,31 @@
     </ul>
   </nav>
   <nav class="navbar navbar-expand-lg navbar-light cabecalho2">
-    <a class="" href="">
-      <img src="imagens/logoR.png" alt="Logo da empresa O Rafaelo" width="100%" height="40">
-    </a>
-    <ul class="nav">
-      <li class="nav-item">
-        <a class="nav-link text-light" href="index.php">Home</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link text-light" href="index.php#produtos">Produtos</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link text-light" href="index.php#somos">Quem somos</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link text-light" href="index.php#lancamentos">Lançamentos</a>
-      </li>
-    </ul>
-  </nav>
+        <a class="" href=""
+          ><img
+            src="imagens/logoR.png"
+            alt="Logo da empresa O Rafaelo"
+            width="100%"
+            height="40"
+        /></a>
+        <ul class="navbar-nav">
+          <li class="nav-item">
+            <a class="nav-link text-light" href="index.php">Home</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link text-light" href="#produtos">Produtos</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link text-light" href="#somos">Quem somos</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link text-light" href="#lancamentos">Lançamentos</a>
+          </li>
+          <li class="nav-item">
+            <a href="listar.php" class="nav-link text-light">Voltar</a>
+          </li>
+        </ul>
+      </nav>
 </header>
 
 <div class="container">
