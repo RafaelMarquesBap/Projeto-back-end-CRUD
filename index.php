@@ -75,7 +75,7 @@
             width="100%"
             height="40"
         /></a>
-        <ul class="nav">
+        <ul class="navbar-nav">
           <li class="nav-item">
             <a class="nav-link text-light" href="index.php">Home</a>
           </li>
@@ -88,8 +88,20 @@
           <li class="nav-item">
             <a class="nav-link text-light" href="#lancamentos">Lançamentos</a>
           </li>
-          
-          
+          <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle text-light" href="#" id="navbarDropdown" 
+            role="button" data-toggle="dropdown" 
+            aria-haspopup="true" aria-expanded="false">
+          Master
+        </a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+          <a class="dropdown-item" href="listar.php">Listar Usuários</a>
+          <a class="dropdown-item" href="visualizar.php">Visualizar Usuários
+          </a>
+          <div class="dropdown-divider"></div>
+          <a class="dropdown-item" href="#">Algo mais aqui</a>
+        </div>
+      </li>
         </ul>
       </nav>
     </header>

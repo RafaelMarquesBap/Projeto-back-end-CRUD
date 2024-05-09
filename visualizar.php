@@ -1,3 +1,18 @@
+<?php
+          require_once "conexao.php";
+          session_start();
+
+          //Pega o id do usuario pela URL
+        $id = filter_input(INPUT_GET, "id", FILTER_SANITIZE_NUMBER_INT);
+
+        if (empty($id)) {
+            //Se não tiver id, volta para o listar
+            header("Location: listar.php");
+            exit();
+        }
+
+            ?>
+
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
@@ -9,7 +24,7 @@
   <link rel="stylesheet" href="css/area_cliente.css">
   <link rel="shortcut icon" href="imagens/iconeR(1).jpg" type="image/x-icon">
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
-  <title>O Rafaelo - Listar</title>
+  <title>O Rafaelo - Visualizar</title>
   <style>
     /* Quebrar o texto que ficou vazando da pagina */
     .table td:nth-child(15) {
@@ -73,7 +88,8 @@
 <div class="container">
   <div class="row">
     <div class="col-md-12">
-      <h2 class="p1">Lista de Usuários</h2>
+      <h2 class="p1">Visualizar usuários</h2>
+
       <table class="table">
         <thead>
           <tr>
@@ -95,85 +111,45 @@
           </tr>
         </thead>
         <tbody>
-          <?php
-          require_once "conexao.php";
-          session_start();
+        <?php
+  //Faz o select do usuario com o mesmo id do visualizar
+    $query_usuario = "SELECT * FROM tb_Usuarios WHERE idUsuario = $id LIMIT 1";
+    $result_usuario = $conn->prepare($query_usuario);
+    $result_usuario->execute();
 
-          // Receber o numero da pagina
-          $pagina_atual = filter_input(INPUT_GET, "page", FILTER_SANITIZE_NUMBER_INT);
-          $pagina = (!empty($pagina_atual)) ? $pagina_atual : 1;
+    // Faz um fetch dos registros encontrados na tabela.
+    if(($result_usuario) AND ($result_usuario->rowCount() != 0)) {
+      $row_usuario = $result_usuario->fetch(PDO::FETCH_ASSOC);
+      // Para otimizar ao mostrar os dados na tela
+      extract($row_usuario);
 
-          // Setar a quantidade de registros por pagina
-          $limite_resultado = 10;
-
-          // Calcular o inicio da visualização
-          $inicio = ($limite_resultado * $pagina) - $limite_resultado;
-
-          $query_usuarios = "SELECT * FROM tb_Usuarios ORDER BY idUsuario DESC LIMIT $inicio, $limite_resultado";
-          $resultado = $conn->prepare($query_usuarios);
-          $resultado->execute();
-
-          if (($resultado) && ($resultado->rowCount() != 0)) {
-            while ($row_usuario = $resultado->fetch(PDO::FETCH_ASSOC)) {
-              extract($row_usuario);
-          ?>
-              <tr>
-                <td><?php echo $idUsuario; ?></td>
-                <td><?php echo $NomeCompleto; ?></td>
-                <td><?php echo $DataNasc; ?></td>
-                <td><?php echo $Sexo; ?></td>
-                <td><?php echo $NomeMaterno; ?></td>
-                <td><?php echo $CPF; ?></td>
-                <td><?php echo $Telefone_Celular; ?></td>
-                <td><?php echo $Telefone_Fixo; ?></td>
-                <td><?php echo $CEP; ?></td>
-                <td><?php echo $Endereco; ?></td>
-                <td><?php echo $Bairro; ?></td>
-                <td><?php echo $Cidade; ?></td>
-                <td><?php echo $UF; ?></td>
-                <td><?php echo $Login; ?></td>
-                <td><?php echo $Senha; ?></td>
-                <td><?php echo "<a href='visualizar.php?id=$idUsuario'>Visualizar</a>"?></td>
-              </tr>
-          <?php
-            }
-          } else {
-            echo "<tr><td colspan='15'>Nenhum usuário encontrado!</td></tr>";
-          }
-          ?>
+    } else {
+      //Se não tiver id, volta para o listar
+      header("Location: listar.php");
+      exit();
+    }
+    
+    ?>
+          <tr>
+          <td><?php echo $idUsuario; ?></td>
+          <td><?php echo $NomeCompleto; ?></td>
+          <td><?php echo $DataNasc; ?></td>
+          <td><?php echo $Sexo; ?></td>
+          <td><?php echo $NomeMaterno; ?></td>
+          <td><?php echo $CPF; ?></td>
+          <td><?php echo $Telefone_Celular; ?></td>
+          <td><?php echo $Telefone_Fixo; ?></td>
+          <td><?php echo $CEP; ?></td>
+          <td><?php echo $Endereco; ?></td>
+          <td><?php echo $Bairro; ?></td>
+          <td><?php echo $Cidade; ?></td>
+          <td><?php echo $UF; ?></td>
+          <td><?php echo $Login; ?></td>
+          <td><?php echo $Senha; ?></td>
+          
         </tbody>
       </table>
-      <?php
-      // Contar a quantidade de registros no BD
-      $query_qnt_registros = "SELECT COUNT(idUsuario) AS num_result FROM tb_Usuarios";
-      $result_qnt_registros = $conn->prepare($query_qnt_registros);
-      $result_qnt_registros->execute();
-      $row_qnt_registros = $result_qnt_registros->fetch(PDO::FETCH_ASSOC);
-
-      // Quantidade de pagina
-      $qnt_pagina = ceil($row_qnt_registros['num_result'] / $limite_resultado);
-
-      // Maximo de link
-      $maximo_link = 2;
-
-      echo "<a href='listar.php?page=1' class='paginacao-link'>Primeira</a> ";
-
-      for ($pagina_anterior = $pagina - $maximo_link; $pagina_anterior <= $pagina - 1; $pagina_anterior++) {
-        if ($pagina_anterior >= 1) {
-          echo "<a href='listar.php?page=$pagina_anterior'class='paginacao-link'>$pagina_anterior</a> ";
-        }
-      }
-
-      echo "$pagina ";
-
-      for ($proxima_pagina = $pagina + 1; $proxima_pagina <= $pagina + $maximo_link; $proxima_pagina++) {
-        if ($proxima_pagina <= $qnt_pagina) {
-          echo "<a href='listar.php?page=$proxima_pagina' class='paginacao-link'>$proxima_pagina</a> ";
-        }
-      }
-
-      echo "<a href='listar.php?page=$qnt_pagina' class='paginacao-link'>Última</a> ";
-      ?>
+     
     </div>
   </div>
 </div>
