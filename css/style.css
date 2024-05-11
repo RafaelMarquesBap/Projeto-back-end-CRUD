@@ -1608,3 +1608,21 @@ body {
 .paginacao-link:last-child {
   margin-left: 10px;
 }
+
+.msgError {
+  text-align: center;
+  color: #ff3b25;
+  background-color: #ffbbbb;
+  padding: 1.4em;
+  border-radius: 4px;
+  font-size: 2em;
+}
+
+.msgSuccess {
+  text-align: center;
+  color: #4eca64;
+  background-color: #bbffbb;
+  padding: 1.4em;
+  border-radius: 4px;
+  font-size: 2em;
+}
