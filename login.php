@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="pt-br">
   <head>
@@ -113,12 +114,43 @@
             <h1>Login</h1>
             <h2>Ninguém irá compartilhar seus dados.</h2>
           </section>
-          <div id="msgError"></div>
-          <div id="msgSuccess"></div>
+          <div>
+          <?php
+require_once "conexao.php";
+
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    if (isset($_POST['login']) && isset($_POST['password'])) {
+        $login = $_POST['login'];
+        $password = $_POST['password'];
+
+        if (empty($login) || empty($password)) {
+            echo "<p class='msgError'>Erro: Necessário preencher todos os campos!</p>";
+        } else {
+            $stmt = $conn->prepare("SELECT * FROM tb_Usuarios WHERE login = :login AND Senha = :senha");
+            $stmt->bindParam(':login', $login);
+            $stmt->bindParam(':senha', $password);
+            $stmt->execute();
+            $usuario = $stmt->fetch(PDO::FETCH_ASSOC);
+            if ($usuario) {
+                echo "<p class='msgSuccess'>Login realizado com sucesso!</p>";
+                header("Location: 2fa.php");
+            } else {
+                echo "<p class='msgError'>Erro: Login e/ou senha incorretos!</p>";
+            }
+        }
+    } else {
+        echo "<p class='msgError'>Erro: Necessário preencher todos os campos!</p>";
+        var_dump($_POST);
+        echo "Entrou no else!";
+    }
+}
+?>
+
+          </div>
           <form class="form" id="form" action="" method="POST">
             <div class="form-content">
               <label id="loginLabel" for="login">Login</label>
-              <input type="text" id="login" placeholder="" name="login" required />
+              <input type="text" id="login" placeholder="" name="login"  />
               <small>Mensagem de erro</small>
             </div>
 
@@ -126,7 +158,7 @@
               <label id="passwordLabel" for="password">Senha</label>
               <i class="fa fa-eye fa-lg" aria-hidden="true"></i>
               <i class="fa fa-eye-slash fa-lg" aria-hidden="true"></i>
-              <input type="password" id="password" name="password" placeholder="" required />
+              <input type="password" id="password" name="password" placeholder=""  />
               <small>Mensagem de erro</small>
             </div>
             <button id="btnLogin" type="submit">Entrar</button>
@@ -218,18 +250,17 @@
       crossorigin="anonymous"
     ></script>
     <script src="js/dark_mode.js"></script>
-    <script src="js/login.js"></script>
   </body>
 </html>
 
 <?php
 
-require_once "conexao.php";
 
-if(isset($_POST['login'])) {
 
-  $login = mysqli_real_escape_string($conn, $_POST['login']);
-  $password = mysqli_real_escape_string($conn, $_POST['password']);
+/*if(isset($_POST['login'])) {
+
+  $login = ($conn, $_POST['login']);
+  $password = ($conn, $_POST['password']);
 
   $sql = "SELECT * FROM tb_Usuarios WHERE Login = '$login' AND Senha = '$password'";
   echo "<br><h6>$sql</h6>";
@@ -246,7 +277,7 @@ if(isset($_POST['login'])) {
       echo "Login inválido!";
     }
 }
-}
+}*/
 
 
 ?>
