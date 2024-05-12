@@ -127,7 +127,7 @@ if (isset($_POST["username"]) && isset($_POST["birthday"]) && isset($_POST["gend
     $cidade = $_POST["cidade"];
     $uf = $_POST["uf"];
     $login = $_POST["login"];
-    $password = $_POST["password"];
+    $password = md5($_POST["password"]);
     $passwordtwo = $_POST["passwordtwo"];
     
     $sql = $conn->prepare("INSERT INTO tb_Usuarios(NomeCompleto, DataNasc, Sexo, NomeMaterno, CPF, Telefone_Celular, Telefone_Fixo, CEP, Endereco, Complemento, Bairro, Cidade, UF, Login, Senha) VALUES (:username, :birthday, :gender, :momname, :cpf, :celnumber, :telnumber, :cep, :address, :complemento, :bairro, :cidade, :uf, :login, :password)");
