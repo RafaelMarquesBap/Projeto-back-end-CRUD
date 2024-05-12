@@ -93,11 +93,20 @@ form.addEventListener("submit", (event) => {
     // Se o formulário não estiver válido, impedir o envio padrão
     event.preventDefault();
     console.log("Formulário não válido. Envio impedido.");
+    msgError.setAttribute("style", "display: block");
+    msgError.innerHTML =
+      "<strong>Preencha todos os campos corretamente antes de cadastrar</strong>";
+    msgSuccess.innerHTML = "";
+    msgSuccess.setAttribute("style", "display: none");
   } else {
-    // Se o formulário estiver válido, permitir o envio padrão
-    // Aqui você pode colocar qualquer lógica adicional que deseja executar antes de enviar o formulário
-    // Por exemplo, você pode adicionar código para enviar os dados para o servidor
+    msgSuccess.setAttribute("style", "display: block");
+    msgSuccess.innerHTML = "<strong>Cadastrando usuário...</strong>";
+    msgError.innerHTML = "";
+    msgError.setAttribute("style", "display: none");
     console.log("Formulário válido. Enviando formulário...");
+      setTimeout(() => {
+    window.location.href = "cadastrar.php";
+  }, 3000);
   }
 });
 
@@ -285,7 +294,7 @@ cep.addEventListener("blur", () => {
   checkInputCep();
 });
 
-cep.addEventListener("focusout", async () => {
+cep.addEventListener("blur", async () => {
   try {
     const onlyNumbers = /^[0-9]+$/;
     const cepValid = /^[0-9]{8}$/;
@@ -301,12 +310,22 @@ cep.addEventListener("focusout", async () => {
     }
 
     const responseCep = await response.json();
-
-    address.value = responseCep.logradouro;
-    bairro.value = responseCep.bairro;
-    cidade.value = responseCep.localidade;
-    complemento.value = responseCep.complemento;
-    uf.value = responseCep.uf;
+    //Só preenche se o cep for válido
+    if (responseCep.logradouro) {
+      address.value = responseCep.logradouro;
+    }
+    if (responseCep.bairro) {
+      bairro.value = responseCep.bairro;
+    }
+    if (responseCep.localidade) {
+      cidade.value = responseCep.localidade;
+    }
+    if (responseCep.complemento) {
+      complemento.value = responseCep.complemento;
+    }
+    if (responseCep.uf) {
+      uf.value = responseCep.uf;
+    }
 
     successInput(address);
     successInput(bairro);
@@ -512,10 +531,14 @@ function isCPF(cpf) {
 
 //-----------------------VERIFICAÇÃO DO TELEFONE CELULAR========================
 function checkInputCelNumber() {
-  const celnumberValue = celnumber.value;
+  const celnumberValue = celnumber.value.trim().replace(/\D/g, "");
 
-  if (celnumberValue === "") {
+  if (celnumberValue === "+55" || celnumberValue === "") {
     errorInput(celnumber, "Telefone celular é obrigatório.");
+    validCelNumber = false;
+    return false;
+  } else if (celnumberValue.length !== 13) {
+    errorInput(celnumber, "Informe um número de telefone celular válido.");
     validCelNumber = false;
     return false;
   } else {
@@ -527,10 +550,14 @@ function checkInputCelNumber() {
 
 //============================VERIFICAÇÃO DO TELEFONE FIXO==================
 function checkInputTelNumber() {
-  const telnumberValue = telnumber.value;
+  const telnumberValue = telnumber.value.trim().replace(/\D/g, "");
 
-  if (telnumberValue === "") {
+  if (telnumberValue === "+55" || telnumberValue === "") {
     errorInput(telnumber, "Telefone fixo é obrigatório.");
+    validTelNumber = false;
+    return false;
+  } else if (telnumberValue.length !== 12) {
+    errorInput(telnumber, "Informe um número de telefone fixo válido.");
     validTelNumber = false;
     return false;
   } else {
@@ -718,7 +745,7 @@ const isValid = [...formItems].every((item) => {
   return item.className === "form-content success";
 });
 if (isValid) {
-  let userList = JSON.parse(localStorage.getItem("userList") || "[]");
+  /*let userList = JSON.parse(localStorage.getItem("userList") || "[]");
 
   userList.push({
     loginCad: login.value,
@@ -727,20 +754,8 @@ if (isValid) {
 
   localStorage.setItem("userList", JSON.stringify(userList));
 
-  msgSuccess.setAttribute("style", "display: block");
-  msgSuccess.innerHTML = "<strong>Cadastrando usuário...</strong>";
-  msgError.innerHTML = "";
-  msgError.setAttribute("style", "display: none");
-
-  /*setTimeout(() => {
-    window.location.href = "cadastrar.php";
-  }, 3000);*/
+*/
 } else {
-  msgError.setAttribute("style", "display: block");
-  msgError.innerHTML =
-    "<strong>Preencha todos os campos corretamente antes de cadastrar</strong>";
-  msgSuccess.innerHTML = "";
-  msgSuccess.setAttribute("style", "display: none");
 }
 
 function errorInput(input, message) {
