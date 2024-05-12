@@ -126,7 +126,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         if (empty($login) || empty($password)) {
             echo "<p class='msgError'>Erro: Necessário preencher todos os campos!</p>";
         } else {
-            $stmt = $conn->prepare("SELECT * FROM tb_Usuarios WHERE login = :login AND Senha = :senha");
+            $stmt = $conn->prepare("SELECT * FROM tb_Usuarios WHERE login = :login AND Senha = md5(:senha)");
             $stmt->bindParam(':login', $login);
             $stmt->bindParam(':senha', $password);
             $stmt->execute();
@@ -140,8 +140,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
     } else {
         echo "<p class='msgError'>Erro: Necessário preencher todos os campos!</p>";
-        var_dump($_POST);
-        echo "Entrou no else!";
     }
 }
 ?>
