@@ -1,4 +1,10 @@
 <?php
+session_start();
+
+if (isset($_SESSION['username'])) {
+  $tipo_usuario = $_SESSION['tipo_usuario'];
+}
+
 ?>
 <!DOCTYPE html>
 <html lang="pt-br">
@@ -88,6 +94,7 @@
           <li class="nav-item">
             <a class="nav-link text-light" href="#lancamentos">Lançamentos</a>
           </li>
+          <?php if($tipo_usuario == "M"): ?>
           <li class="nav-item dropdown">
         <a class="nav-link dropdown-toggle text-light" href="#" id="navbarDropdown" 
             role="button" data-toggle="dropdown" 
@@ -101,6 +108,7 @@
           <a class="dropdown-item" href="#">Algo mais aqui</a>
         </div>
       </li>
+      <?php endif; ?>
         </ul>
       </nav>
     </header>
@@ -243,7 +251,7 @@ Floratta Blue é uma fragrância super confortável com o
     <div>
       <span class="p1" id="contato">Entre em contato</span>
     </div>
-    <section>
+    <section class="container-fluid">
       <div class="alinhamentoCards container-fluid">
         <div class="card2">
           <span class="p1">Contato</span>

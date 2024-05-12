@@ -117,6 +117,7 @@
           <div>
           <?php
 require_once "conexao.php";
+session_start();
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if (isset($_POST['login']) && isset($_POST['password'])) {
@@ -126,12 +127,18 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         if (empty($login) || empty($password)) {
             echo "<p class='msgError'>Erro: Necessário preencher todos os campos!</p>";
         } else {
-            $stmt = $conn->prepare("SELECT * FROM tb_Usuarios WHERE login = :login AND Senha = md5(:senha)");
+            //
+            $senha_hash = password_hash($password, PASSWORD_DEFAULT);
+
+            $stmt = $conn->prepare("SELECT * FROM tb_Usuarios WHERE login = :login");
             $stmt->bindParam(':login', $login);
-            $stmt->bindParam(':senha', $password);
             $stmt->execute();
             $usuario = $stmt->fetch(PDO::FETCH_ASSOC);
-            if ($usuario) {
+            
+            
+            if ($usuario && password_verify($password, $usuario['Senha'])) {
+                $_SESSION['username'] = $usuario['NomeCompleto'];
+                $_SESSION['tipo_usuario'] = $usuario['Tipo_usuario'];
                 echo "<p class='msgSuccess'>Login realizado com sucesso!</p>";
                 header("Location: 2fa.php");
             } else {
@@ -143,6 +150,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 }
 ?>
+
 
           </div>
           <form class="form" id="form" action="" method="POST">

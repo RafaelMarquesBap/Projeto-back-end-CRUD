@@ -112,29 +112,107 @@
       <h2 class="p1">Editar usuário</h2>
 
       <?php
+require_once "conexao.php";
+session_start();
 
-        //Receber os dados do formulario
-        $dados = filter_input_array(INPUT_POST, FILTER_DEFAULT);
-        
-        // Verificar se o usuario clicou no botao
-        if(!empty($dados['EditUsuario'])) {
-            $empty_input = false; 
-           $dados = array_map('trim', $dados); // Tira os espaços vazios
-           if(in_array("", $dados)){ // Verificar se alguma posiçao esta vazia
+// Pega o id do usuário pela URL
+$id = filter_input(INPUT_GET, "id", FILTER_SANITIZE_NUMBER_INT);
 
-           }  
+if (empty($id)) {
+    // Se não tiver id, volta para o listar
+    header("Location: listar.php");
+    exit();
+}
+
+$query_usuario = "SELECT * FROM tb_Usuarios WHERE idUsuario = :id LIMIT 1";
+$result_usuario = $conn->prepare($query_usuario);
+$result_usuario->bindParam(':id', $id, PDO::PARAM_INT);
+$result_usuario->execute();
+
+if (($result_usuario) && ($result_usuario->rowCount() != 0)) {
+    $row_usuario = $result_usuario->fetch(PDO::FETCH_ASSOC);
+} else {
+    header("Location: listar.php");
+    exit();
+}
+?>
+
+<!-- Seu HTML continua aqui -->
+
+<?php
+// Receber os dados do formulário
+$dados = filter_input_array(INPUT_POST, FILTER_DEFAULT);
+
+// Verificar se o usuário clicou no botão de editar
+if (!empty($dados['EditUsuario'])) {
+    $empty_input = false;
+    $dados = array_map('trim', $dados); // Remove espaços vazios
+
+    if (in_array("", $dados)) {
+        $empty_input = true;
+        echo "<p class='msgError'>Erro: Necessário preencher todos os campos!</p>";
+    }
+
+    if (!$empty_input) {
+        // Criptografar a senha
+        $senha_hash = password_hash($dados['Senha'], PASSWORD_DEFAULT);
+
+        $query_usuario_edit = "UPDATE tb_Usuarios SET Tipo_usuario=:tipo_usuario, NomeCompleto=:nome_completo, DataNasc=:nascimento, Sexo=:sexo, 
+            NomeMaterno=:nome_materno, CPF=:cpf, Telefone_Celular=:tel_cel, 
+            Telefone_Fixo=:tel_fixo, CEP=:cep, Endereco=:endereco, 
+            Complemento=:complemento, Bairro=:bairro, Cidade=:cidade, UF=:uf, Login=:login, Senha=:senha
+            WHERE idUsuario=:id";
+
+        $edit_usuario = $conn->prepare($query_usuario_edit);
+        $edit_usuario->bindParam(':tipo_usuario', $dados['Tipo_usuario']);
+        $edit_usuario->bindParam(':nome_completo', $dados['NomeCompleto']);
+        $edit_usuario->bindParam(':nascimento', $dados['DataNasc']);
+        $edit_usuario->bindParam(':sexo', $dados['Sexo']);
+        $edit_usuario->bindParam(':nome_materno', $dados['NomeMaterno']);
+        $edit_usuario->bindParam(':cpf', $dados['CPF']);
+        $edit_usuario->bindParam(':tel_cel', $dados['Telefone_Celular']);
+        $edit_usuario->bindParam(':tel_fixo', $dados['Telefone_Fixo']);
+        $edit_usuario->bindParam(':cep', $dados['CEP']);
+        $edit_usuario->bindParam(':endereco', $dados['Endereco']);
+        $edit_usuario->bindParam(':complemento', $dados['Complemento']);
+        $edit_usuario->bindParam(':bairro', $dados['Bairro']);
+        $edit_usuario->bindParam(':cidade', $dados['Cidade']);
+        $edit_usuario->bindParam(':uf', $dados['UF']);
+        $edit_usuario->bindParam(':login', $dados['Login']);
+        $edit_usuario->bindParam(':senha', $senha_hash);
+        $edit_usuario->bindParam(':id', $dados['idUsuario']);
+
+        if ($edit_usuario->execute()) {
+            echo "<p class='msgSuccess'>Editado com sucesso!</p><br>";
+            header("Location: listar.php");
+            exit();
+        } else {
+            echo "<p class='msgError'>Erro: Usuário não atualizado!</p>";
         }
-      ?>
+    }
+}
+?>
+
     </div>
   </div>
 
       <form action="" id="edit-usuario" method="POST" >
+
+      <input type="hidden" name="idUsuario" value="<?php echo $row_usuario['idUsuario']; ?>">
+
         <div class="form-content">
         <label for="NomeCompleto">Nome Completo:</label>
         <input type="text" class="form-control" name="NomeCompleto" id="NomeCompleto" placeholder="Nome Completo" value="<?php 
         if(isset($dados['NomeCompleto'])) {
             echo $dados['NomeCompleto'];
         } elseif(isset($row_usuario['NomeCompleto'])) { echo $row_usuario['NomeCompleto']; } ?>" required>
+        </div>
+        <div class="form-content">
+        <label for="NomeCompleto">Tipo de Usuário:</label>
+        <input type="text" class="form-control" name="Tipo_usuario" id="Tipo_usuario" placeholder="Tipo de usuário" value="<?php 
+        if(isset($dados['Tipo_usuario'])) {
+            echo $dados['Tipo_usuario'];
+        } elseif(isset($row_usuario['Tipo_usuario'])) { echo $row_usuario['Tipo_usuario']; } ?>" required>
         </div>
         <div class="form-content">
         <label for="DataNasc">Data de Nascimento:</label>
@@ -152,7 +230,7 @@
                     if(isset($dados['Sexo'])) {
                         echo $dados['Sexo'];
                     } elseif(isset($row_usuario['Sexo'])) 
-            { echo $row_usuario['Sexo']; } ?>" required>
+            { echo $row_usuario['Sexo']; } ?>">
         </div>
         <div class="form-content">
         <label for="NomeMaterno">Nome Materno:</label>
@@ -250,6 +328,7 @@
                     echo $dados['Senha'];
                 } elseif(isset($row_usuario['Senha'])) { echo $row_usuario['Senha']; } ?>" required>
         </div>
+        <a href="visualizar.php" class="btn btn-primary">Voltar</a>
         <input class="btn btn-primary"type="submit" value="Salvar" name="EditUsuario">
       </form>
     </div>

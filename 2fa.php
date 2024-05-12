@@ -1,3 +1,21 @@
+<?php
+session_start();
+
+// Verifica se está logado
+if(!isset($_SESSION['username'])) {
+  header('Location: login.php');
+  exit();
+}
+
+// Verifica o tipo de usuario
+if (isset($_SESSION['tipo_usuario'])){
+  $tipo_usuario = $_SESSION['tipo_usuario'];
+  print_r($_SESSION);
+} else {
+  header('Location: login.php');
+  exit();
+}
+?>
 <!DOCTYPE html>
 <html lang="pt-br">
   <head>
@@ -98,7 +116,21 @@
           <li class="nav-item">
             <a class="nav-link text-light" href="index.php#lancamentos">Lançamentos</a>
           </li>
-          
+          <?php if($tipo_usuario == "M"): ?>
+          <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle text-light" href="#" id="navbarDropdown" 
+            role="button" data-toggle="dropdown" 
+            aria-haspopup="true" aria-expanded="false">
+          Master
+        </a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+          <a class="dropdown-item" href="visualizar.php">Visualizar Usuários
+          </a>
+          <div class="dropdown-divider"></div>
+          <a class="dropdown-item" href="#">Algo mais aqui</a>
+        </div>
+      </li>
+      <?php endif; ?>
           
         </ul>
       </nav>

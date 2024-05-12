@@ -119,9 +119,9 @@ if(!isset($_SESSION['tentativas'])) {
 }
 
 
-if($_SESSION['tentativas'] >= 3){
+if($_SESSION['tentativas'] > 2){
     echo "<h1 class='p1'>Quantidade de tentativas excedidas! Redirecionando para login.php...</h1>";
-    session_destroy();
+    unset($_SESSION['tentativas']);
     header('Refresh: 3; URL = login.php');
     exit();
 }
@@ -136,11 +136,12 @@ if($resultado = $stmt->rowCount() > 0){
     $linha = $stmt->fetch(PDO::FETCH_ASSOC);
     echo "<h1 class='p1'>Autenticação bem-sucedida!</h1>";
     echo "<h1 class='p1'>Redirecionando para a página principal...</h1>";
+    $_SESSION['tentativas'] = 0;
     header("Refresh:3; URL = index.php");
     exit();
 } else {
     $_SESSION['tentativas']++;
-    echo "<h1 class='p1'>Autenticação incorreta! Tente novamente.</h1><hr>";
+    echo "<h1 class='p1'>Autenticação incorreta! Tente novamente.</h1>";
     echo "<div class='text-center'>";
     echo "<a href='2fa.php' class='btn btn-info btn-lg'>Voltar</a>";
     echo "</div>";

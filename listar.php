@@ -92,6 +92,7 @@
         <thead>
           <tr>
             <th>ID</th>
+            <th>Tipo de Usuário</th>
             <th>Nome Completo</th>
             <th>Data de Nascimento</th>
             <th>Sexo</th>
@@ -133,6 +134,7 @@
           ?>
               <tr>
                 <td><?php echo $idUsuario; ?></td>
+                <td><?php echo $Tipo_usuario; ?></td>
                 <td><?php echo $NomeCompleto; ?></td>
                 <td><?php echo $DataNasc; ?></td>
                 <td><?php echo $Sexo; ?></td>
