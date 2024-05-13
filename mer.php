@@ -126,7 +126,64 @@ print_r($_SESSION);
             <img src="imagens/print_mer.png" alt="Imagem do MER">
         </div>
     </section>
-
+    <footer>
+      <div class="rodape">
+        <a class="" href="#"
+          ><img
+            src="imagens/logoR.png"
+            alt="Logo Empresa O Rafaelo"
+            width="180"
+            height="40"
+            class="pl-3 mt-2"
+        /></a>
+        <div class="nav justify-contente-center">
+          <ul class="nav flex-column pl-3">
+            <li class="nav-item">
+              <a class="nav-link active text-light" href="#home"
+                >Voltar ao Topo</a
+              >
+            </li>
+            <li class="nav-item">
+              <a class="nav-link text-light" href="index.php#produtos"
+                >Produtos</a
+              >
+            </li>
+            <li class="nav-item">
+              <a class="nav-link text-light" href="index.php#somos"
+                >Quem somos</a
+              >
+            </li>
+          </ul>
+          <ul class="nav flex-column pl-3">
+            <li class="nav-item">
+              <a class="nav-link text-light" href="area_cliente.php"
+                >Área do Cliente</a
+              >
+            </li>
+            <li class="nav-item">
+              <a class="nav-link text-light" href="login.php"
+                >Login do Cliente</a
+              >
+            </li>
+            <li class="nav-item">
+              <a
+                class="nav-link text-light"
+                target="_blank"
+                href="https://www.linkedin.com/jobs/search/?currentJobId=3705655194&f_C=247287&geoId=92000000&origin=COMPANY_PAGE_JOBS_CLUSTER_EXPANSION&originToLandingJobPostings=3705655194%2C3700622102%2C3622560732%2C3622564292%2C3705680774%2C3650056400%2C3622563163%2C3622560179%2C3650056329"
+                >Trabalhe Conosco</a
+              >
+            </li>
+          </ul>
+          <ul class="nav flex-column pl-1"></ul>
+            <li class="nav-item">
+              <a class="nav-link text-light" href="index.php#lancamentos"
+                >Lançamentos</a
+              >
+            </li>
+          </ul>
+        </div>
+      </div>
+    </footer>
     <script
       src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
       integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
