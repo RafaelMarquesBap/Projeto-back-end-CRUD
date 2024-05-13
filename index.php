@@ -5,6 +5,8 @@ if (isset($_SESSION['username'])) {
   $tipo_usuario = $_SESSION['tipo_usuario'];
 }
 
+print_r($_SESSION);
+
 ?>
 <!DOCTYPE html>
 <html lang="pt-br">
@@ -68,8 +70,13 @@ if (isset($_SESSION['username'])) {
             <a class="nav-link text-light" href="./login.php"
               >Área do Cliente</a
             >
-            <li class="nav-item"><button class="log-off" onclick="sair()">Encerrar sessão</button></li>
+            <?php if(isset($_SESSION['usuario_logado'])): ?>
+            <li class="nav-item">
+              <form action="logout.php" method="POST">
+              <button type="submit" name="logout" class="log_off">Encerrar sessão</button></li>
+              </form>
           </li>
+          <?php endif; ?>
           <li class="nav-item"></li>
         </ul>
       </nav>
@@ -102,10 +109,10 @@ if (isset($_SESSION['username'])) {
           Master
         </a>
         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-          <a class="dropdown-item" href="visualizar.php">Visualizar Usuários
+          <a class="dropdown-item" href="listar.php">Visualizar Usuários
           </a>
           <div class="dropdown-divider"></div>
-          <a class="dropdown-item" href="#">Algo mais aqui</a>
+          <a class="dropdown-item" href="area_cliente.php">Cadastrar usuários</a>
         </div>
       </li>
       <?php endif; ?>

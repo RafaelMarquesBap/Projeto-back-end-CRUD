@@ -1,3 +1,9 @@
+<?php
+          session_start();
+          if (isset($_SESSION['username'])) {
+            $tipo_usuario = $_SESSION['tipo_usuario'];
+          }
+?>
 <!DOCTYPE html>
 <html lang="pt-br">
   <head>
@@ -106,10 +112,10 @@
           Master
         </a>
         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-          <a class="dropdown-item" href="visualizar.php">Visualizar Usuários
+          <a class="dropdown-item" href="listar.php">Visualizar Usuários
           </a>
           <div class="dropdown-divider"></div>
-          <a class="dropdown-item" href="#">Algo mais aqui</a>
+          <a class="dropdown-item" href="#">Cadastrar usuários</a>
         </div>
       </li>
       <?php endif; ?>

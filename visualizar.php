@@ -1,12 +1,18 @@
 <?php
-          require_once "conexao.php";
           session_start();
+if (isset($_SESSION['username'])) {
+  $tipo_usuario = $_SESSION['tipo_usuario'];
+}
+
+          require_once "conexao.php";
+          
 
           //Pega o id do usuario pela URL
         $id = filter_input(INPUT_GET, "id", FILTER_SANITIZE_NUMBER_INT);
 
         if (empty($id)) {
             //Se não tiver id, volta para o listar
+            $_SESSION['msg'] = "<p class='msgError'>Usuário não encontrado!</p>";
             header("Location: listar.php");
             exit();
         }
@@ -85,18 +91,20 @@
           <li class="nav-item">
             <a class="nav-link text-light" href="#lancamentos">Lançamentos</a>
           </li>
-          <li class="nav-item">
+      <li class="nav-item">
             <a href="listar.php" class="nav-link text-light">Voltar</a>
           </li>
         </ul>
       </nav>
 </header>
-
 <div class="container">
   <div class="row">
     <div class="col-md-12">
       <h2 class="p1">Visualizar usuários</h2>
-
+    </div>
+  </div>
+</div>
+    <div class="table-responsive">
       <table class="table">
         <thead>
           <tr>
@@ -156,7 +164,11 @@
           
         </tbody>
       </table>
-     
+      </div>
+      <div class="text-center">
+      <a href="listar.php" class="btn btn-info">Voltar</a>
+      </div>
+      
     </div>
   </div>
 </div>

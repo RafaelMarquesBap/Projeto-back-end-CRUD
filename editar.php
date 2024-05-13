@@ -7,6 +7,7 @@
 
         if (empty($id)) {
             //Se não tiver id, volta para o listar
+            $_SESSION['msg'] = "<p class='msgError'>Usuário não encontrado!</p>";
             header("Location: listar.php");
             exit();
         }
@@ -113,13 +114,14 @@
 
       <?php
 require_once "conexao.php";
-session_start();
+
 
 // Pega o id do usuário pela URL
 $id = filter_input(INPUT_GET, "id", FILTER_SANITIZE_NUMBER_INT);
 
 if (empty($id)) {
     // Se não tiver id, volta para o listar
+    $_SESSION['msg'] = "<p class='msgError'>Usuário não encontrado!</p>";
     header("Location: listar.php");
     exit();
 }
@@ -183,7 +185,7 @@ if (!empty($dados['EditUsuario'])) {
         $edit_usuario->bindParam(':id', $dados['idUsuario']);
 
         if ($edit_usuario->execute()) {
-            echo "<p class='msgSuccess'>Editado com sucesso!</p><br>";
+          $_SESSION['msg'] = "<p class='msgSuccess'>Usuário atualizado com sucesso!</p>";
             header("Location: listar.php");
             exit();
         } else {
@@ -328,7 +330,7 @@ if (!empty($dados['EditUsuario'])) {
                     echo $dados['Senha'];
                 } elseif(isset($row_usuario['Senha'])) { echo $row_usuario['Senha']; } ?>" required>
         </div>
-        <a href="visualizar.php" class="btn btn-primary">Voltar</a>
+        <a href="listar.php" class="btn btn-primary">Voltar</a>
         <input class="btn btn-primary"type="submit" value="Salvar" name="EditUsuario">
       </form>
     </div>

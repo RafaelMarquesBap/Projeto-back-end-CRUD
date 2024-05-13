@@ -84,14 +84,14 @@
   box-shadow: none;
 }
 
-.log-off {
+.log_off {
   margin: 6px 6px 0px 0px;
   background-color: #ca1c2a;
   border: none;
+  display: block;
   border-radius: 5px;
   color: #fff;
   cursor: pointer;
-  display: none;
 }
 
 .log-off2 {

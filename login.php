@@ -1,4 +1,7 @@
+<?php
+          session_start();
 
+?>
 <!DOCTYPE html>
 <html lang="pt-br">
   <head>
@@ -99,8 +102,21 @@
           <li class="nav-item">
             <a class="nav-link text-light" href="index.php#lancamentos">Lançamentos</a>
           </li>
-          
-          
+          <?php if($tipo_usuario == "M"): ?>
+          <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle text-light" href="#" id="navbarDropdown" 
+            role="button" data-toggle="dropdown" 
+            aria-haspopup="true" aria-expanded="false">
+          Master
+        </a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+          <a class="dropdown-item" href="listar.php">Visualizar Usuários
+          </a>
+          <div class="dropdown-divider"></div>
+          <a class="dropdown-item" href="area_cliente.php">Cadastrar usuários</a>
+        </div>
+      </li>
+      <?php endif; ?>
         </ul>
       </nav>
     </header>
@@ -117,7 +133,10 @@
           <div>
           <?php
 require_once "conexao.php";
-session_start();
+if(isset($_SESSION['msg'])) {
+  echo $_SESSION['msg'];
+  unset($_SESSION['msg']);
+}
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if (isset($_POST['login']) && isset($_POST['password'])) {
@@ -127,31 +146,27 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         if (empty($login) || empty($password)) {
             echo "<p class='msgError'>Erro: Necessário preencher todos os campos!</p>";
         } else {
-            //
-            $senha_hash = password_hash($password, PASSWORD_DEFAULT);
-
-            $stmt = $conn->prepare("SELECT * FROM tb_Usuarios WHERE login = :login");
+            $stmt = $conn->prepare("SELECT * FROM tb_Usuarios WHERE Login = :login");
             $stmt->bindParam(':login', $login);
             $stmt->execute();
             $usuario = $stmt->fetch(PDO::FETCH_ASSOC);
             
-            
             if ($usuario && password_verify($password, $usuario['Senha'])) {
+                // Credenciais corretas, proceda com o login
                 $_SESSION['username'] = $usuario['NomeCompleto'];
                 $_SESSION['tipo_usuario'] = $usuario['Tipo_usuario'];
-                echo "<p class='msgSuccess'>Login realizado com sucesso!</p>";
                 header("Location: 2fa.php");
+                exit(); // Termina o script após o redirecionamento
             } else {
+                // Credenciais incorretas, exiba uma mensagem de erro
                 echo "<p class='msgError'>Erro: Login e/ou senha incorretos!</p>";
             }
-        }
+        }            
     } else {
         echo "<p class='msgError'>Erro: Necessário preencher todos os campos!</p>";
     }
 }
 ?>
-
-
           </div>
           <form class="form" id="form" action="" method="POST">
             <div class="form-content">

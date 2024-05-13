@@ -107,22 +107,20 @@
     <div>
     <?php
 session_start(); // Inicia a sessão
-
 require_once 'conexao.php';
 
 $birthday = $_POST['birthday'];
 $momname = $_POST['momname'];    
 $cep = $_POST['cep'];
 
-if(!isset($_SESSION['tentativas'])) {
+if (!isset($_SESSION['tentativas'])) {
     $_SESSION['tentativas'] = 0;
 }
 
-
-if($_SESSION['tentativas'] > 2){
-    echo "<h1 class='p1'>Quantidade de tentativas excedidas! Redirecionando para login.php...</h1>";
-    unset($_SESSION['tentativas']);
-    header('Refresh: 3; URL = login.php');
+if ($_SESSION['tentativas'] >= 3) {
+    $_SESSION['msg'] = "<p class='msgError'>Quantidade de tentativas excedidas! Tente novamente.</p>";
+    unset($_SESSION['tentativas']); // Remover a variável de tentativas
+    header('Location: login.php');
     exit();
 }
 
@@ -132,21 +130,30 @@ $stmt->bindParam(':momname', $momname);
 $stmt->bindParam(':cep', $cep);
 $stmt->execute();
 
-if($resultado = $stmt->rowCount() > 0){
-    $linha = $stmt->fetch(PDO::FETCH_ASSOC);
-    echo "<h1 class='p1'>Autenticação bem-sucedida!</h1>";
-    echo "<h1 class='p1'>Redirecionando para a página principal...</h1>";
-    $_SESSION['tentativas'] = 0;
-    header("Refresh:3; URL = index.php");
+if ($resultado = $stmt->rowCount() > 0) {
+    // Se a autenticação for bem-sucedida
+    echo "<div style='text-align: center; margin-top: 100px;'>";
+    echo "<h1 class='msgSuccess'>Autenticação bem-sucedida! Redirecionando para a página principal...</h1>";
+    echo "</div>";
+    $_SESSION['usuario_logado'] = true;
+    $_SESSION['tentativas'] = 0; // Reiniciar o contador de tentativas
+    header("Refresh:2; URL = index.php");
     exit();
 } else {
+    // Se a autenticação falhar
     $_SESSION['tentativas']++;
-    echo "<h1 class='p1'>Autenticação incorreta! Tente novamente.</h1>";
-    echo "<div class='text-center'>";
-    echo "<a href='2fa.php' class='btn btn-info btn-lg'>Voltar</a>";
-    echo "</div>";
+    if ($_SESSION['tentativas'] >= 3) {
+        $_SESSION['msg'] = "<p class='msgError'>Quantidade de tentativas excedidas! Tente novamente.</p>";
+        unset($_SESSION['tentativas']); // Remover a variável de tentativas
+        header('Location: login.php');
+        exit();
+    } else {
+        echo "<h1 class='p1'>Autenticação incorreta! Tente novamente.</h1>";
+        echo "<div class='text-center'>";
+        echo "<a href='2fa.php' class='btn btn-info btn-lg'>Voltar</a>";
+        echo "</div>";
+    }
 }
-
 ?>
     </div>
     </section>

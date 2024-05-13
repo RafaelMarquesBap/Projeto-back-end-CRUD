@@ -108,6 +108,11 @@
 session_start();
 require_once "conexao.php";
 
+if (!isset($_SESSION['username'])) {
+  $tipo_usuario = $_SESSION['tipo_usuario'];
+  header("Location: login.php");
+}
+
 // Verifica se os dados foram enviados via método POST
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Verifica se todos os campos obrigatórios foram preenchidos
@@ -157,7 +162,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $sql->execute();
 
             if($sql->rowCount()) {
-                echo "<p class='p1'>Bem-vindo, $username</p>";
+                echo "<p class='p1'>Bem-vindo(a), $username</p>";
                 echo "<p class='p1'>Seu cadastro foi efetuado com sucesso!</p>";
                 echo "<p class='p1'>Você será redirecionado para a tela de login em alguns segundos...</p>";
                 echo "<meta http-equiv='refresh' content='5;url=login.php'>";

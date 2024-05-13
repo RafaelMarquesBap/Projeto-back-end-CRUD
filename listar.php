@@ -1,3 +1,10 @@
+<?php
+session_start();
+if (!isset($_SESSION['username'])) {
+  $tipo_usuario = $_SESSION['tipo_usuario'];
+  header("Location: login.php");
+}
+?>
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
@@ -46,7 +53,13 @@
       <li class="nav-item">
         <a class="nav-link text-light" href="./login.php">Área do Cliente</a>
       </li>
-      <li class="nav-item"></li>
+      <?php if(isset($_SESSION['usuario_logado'])): ?>
+            <li class="nav-item">
+              <form action="logout.php" method="POST">
+              <button type="submit" name="logout" class="log_off">Encerrar sessão</button></li>
+              </form>
+          </li>
+          <?php endif; ?>
     </ul>
   </nav>
   <nav class="navbar navbar-expand-lg navbar-light cabecalho2">
@@ -66,19 +79,21 @@
       <li class="nav-item">
         <a class="nav-link text-light" href="index.php#lancamentos">Lançamentos</a>
       </li>
-      <li class="nav-item dropdown">
+      <?php if($tipo_usuario == "M"): ?>
+          <li class="nav-item dropdown">
         <a class="nav-link dropdown-toggle text-light" href="#" id="navbarDropdown" 
             role="button" data-toggle="dropdown" 
             aria-haspopup="true" aria-expanded="false">
           Master
         </a>
         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-          <a class="dropdown-item" href="visualizar.php">Visualizar Usuários
+          <a class="dropdown-item" href="listar.php">Visualizar Usuários
           </a>
           <div class="dropdown-divider"></div>
-          <a class="dropdown-item" href="#">Algo mais aqui</a>
+          <a class="dropdown-item" href="area_cliente.php">Cadastrar usuários</a>
         </div>
       </li>
+      <?php endif; ?>
     </ul>
   </nav>
 </header>
@@ -87,10 +102,21 @@
   <div class="row">
     <div class="col-md-12">
       <h2 class="p1">Lista de Usuários</h2>
+      <div>
+      <?php 
+      if(isset($_SESSION['msg'])) {
+        echo $_SESSION['msg'];
+        unset($_SESSION['msg']);
+      }
+      
+      ?>
+      </div>
+
       <div class="table-responsive">
       <table class="table">
         <thead>
           <tr>
+            <th colspan="3" class="text-center">Ações</th>
             <th>ID</th>
             <th>Tipo de Usuário</th>
             <th>Nome Completo</th>
@@ -107,12 +133,13 @@
             <th>UF</th>
             <th>Login</th>
             <th>Senha</th>
+            
           </tr>
         </thead>
         <tbody>
           <?php
           require_once "conexao.php";
-          session_start();
+
 
           // Receber o numero da pagina
           $pagina_atual = filter_input(INPUT_GET, "page", FILTER_SANITIZE_NUMBER_INT);
@@ -133,6 +160,9 @@
               extract($row_usuario);
           ?>
               <tr>
+                <td><?php echo "<a href='visualizar.php?id=$idUsuario' class='btn btn-info btn-sm'>Visualizar</a>"?></td>
+                <td><?php echo "<a href='editar.php?id=$idUsuario'  class='btn btn-info btn-sm'>Editar</a>"?></td>
+                <td><?php echo "<a href='apagar.php?id=$idUsuario'  class='btn btn-info btn-sm'>Apagar</a>"?></td>
                 <td><?php echo $idUsuario; ?></td>
                 <td><?php echo $Tipo_usuario; ?></td>
                 <td><?php echo $NomeCompleto; ?></td>
@@ -149,8 +179,7 @@
                 <td><?php echo $UF; ?></td>
                 <td><?php echo $Login; ?></td>
                 <td><?php echo $Senha; ?></td>
-                <td><?php echo "<a href='visualizar.php?id=$idUsuario'>Visualizar</a>"?></td>
-                <td><?php echo "<a href='editar.php?id=$idUsuario'>Editar</a>"?></td>
+
               </tr>
           <?php
             }

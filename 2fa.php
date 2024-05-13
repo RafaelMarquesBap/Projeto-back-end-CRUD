@@ -1,21 +1,3 @@
-<?php
-session_start();
-
-// Verifica se está logado
-if(!isset($_SESSION['username'])) {
-  header('Location: login.php');
-  exit();
-}
-
-// Verifica o tipo de usuario
-if (isset($_SESSION['tipo_usuario'])){
-  $tipo_usuario = $_SESSION['tipo_usuario'];
-  print_r($_SESSION);
-} else {
-  header('Location: login.php');
-  exit();
-}
-?>
 <!DOCTYPE html>
 <html lang="pt-br">
   <head>
@@ -35,7 +17,7 @@ if (isset($_SESSION['tipo_usuario'])){
       href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"
     />
     <link rel="stylesheet" href="css/login.css" />
-    <title>Confirmação de dados</title>
+    <title>O Rafaelo - Autenticação de Dois Fatores</title>
   </head>
 
   <body>
@@ -116,21 +98,7 @@ if (isset($_SESSION['tipo_usuario'])){
           <li class="nav-item">
             <a class="nav-link text-light" href="index.php#lancamentos">Lançamentos</a>
           </li>
-          <?php if($tipo_usuario == "M"): ?>
-          <li class="nav-item dropdown">
-        <a class="nav-link dropdown-toggle text-light" href="#" id="navbarDropdown" 
-            role="button" data-toggle="dropdown" 
-            aria-haspopup="true" aria-expanded="false">
-          Master
-        </a>
-        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-          <a class="dropdown-item" href="visualizar.php">Visualizar Usuários
-          </a>
-          <div class="dropdown-divider"></div>
-          <a class="dropdown-item" href="#">Algo mais aqui</a>
-        </div>
-      </li>
-      <?php endif; ?>
+
           
         </ul>
       </nav>
