@@ -146,12 +146,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         if (empty($login) || empty($password)) {
             echo "<p class='msgError'>Erro: Necessário preencher todos os campos!</p>";
         } else {
-            $stmt = $conn->prepare("SELECT * FROM tb_Usuarios WHERE Login = :login");
+            $stmt = $conn->prepare("SELECT * FROM tb_Usuarios WHERE Login = :login AND Senha = :senha");
             $stmt->bindParam(':login', $login);
+            $stmt->bindParam(':senha', $password);
             $stmt->execute();
             $usuario = $stmt->fetch(PDO::FETCH_ASSOC);
             
-            if ($usuario && password_verify($password, $usuario['Senha'])) {
+            if ($usuario) {
                 // Credenciais corretas, proceda com o login
                 $_SESSION['username'] = $usuario['NomeCompleto'];
                 $_SESSION['tipo_usuario'] = $usuario['Tipo_usuario'];

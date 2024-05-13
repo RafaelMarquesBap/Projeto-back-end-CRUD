@@ -111,8 +111,10 @@ print_r($_SESSION);
         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
           <a class="dropdown-item" href="listar.php">Visualizar Usuários
           </a>
+          <a class="dropdown-item" href="area_cliente.php">Cadastrar Usuários
+          </a>
           <div class="dropdown-divider"></div>
-          <a class="dropdown-item" href="area_cliente.php">Cadastrar usuários</a>
+          <a class="dropdown-item" href="mer.php">MER</a>
         </div>
       </li>
       <?php endif; ?>
