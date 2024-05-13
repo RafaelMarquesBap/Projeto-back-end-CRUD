@@ -80,7 +80,14 @@
               >Área do Cliente</a
             >
           </li>
-          <li class="nav-item"></li>
+          </li>
+          <?php if(isset($_SESSION['usuario_logado'])): ?>
+            <li class="nav-item">
+              <form action="logout.php" method="POST">
+              <button type="submit" name="logout" class="log_off">Encerrar sessão</button></li>
+              </form>
+          </li>
+          <?php endif; ?>
         </ul>
       </nav>
       <nav class="navbar navbar-expand-lg navbar-light cabecalho2">
