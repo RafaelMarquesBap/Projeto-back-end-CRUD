@@ -1,5 +1,6 @@
 <?php
 session_start();
+require_once 'conexao.php';
 
 if (isset($_SESSION['username'])) {
   $tipo_usuario = $_SESSION['tipo_usuario'];
@@ -71,7 +72,13 @@ print_r($_SESSION);
               >Área do Cliente</a
             >
             <?php if(isset($_SESSION['usuario_logado'])): ?>
-            <li class="nav-item">
+              <li class="nav-item">
+            <a class="nav-link text-light" href="#"><?php echo $_SESSION['login'];?></a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link text-light" href=""><?php echo $_SESSION['tipo_usuario'];?></a>
+          </li>
+              <li class="nav-item">
               <form action="logout.php" method="POST">
               <button type="submit" name="logout" class="log_off">Encerrar sessão</button></li>
               </form>
@@ -117,6 +124,11 @@ print_r($_SESSION);
           <a class="dropdown-item" href="mer.php">MER</a>
         </div>
       </li>
+      <?php endif; ?>
+      <?php if(isset($_SESSION['usuario_logado'])): ?>
+      <li class="nav-item">
+            <a class="nav-link text-light" href="mer.php">MER</a>
+          </li>
       <?php endif; ?>
         </ul>
       </nav>

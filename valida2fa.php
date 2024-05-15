@@ -107,6 +107,7 @@
     <div>
     <?php
 session_start(); // Inicia a sessão
+ob_start();
 require_once 'conexao.php';
 
 $birthday = $_POST['birthday'];
@@ -129,12 +130,16 @@ $stmt->bindParam(':birthday', $birthday);
 $stmt->bindParam(':momname', $momname);
 $stmt->bindParam(':cep', $cep);
 $stmt->execute();
+$usuario = $stmt->fetch(PDO::FETCH_ASSOC);
 
 if ($resultado = $stmt->rowCount() > 0) {
     // Se a autenticação for bem-sucedida
     echo "<div style='text-align: center; margin-top: 100px;'>";
     echo "<h1 class='msgSuccess'>Autenticação bem-sucedida! Redirecionando para a página principal...</h1>";
     echo "</div>";
+    $_SESSION['username'] = $usuario['NomeCompleto'];
+    $_SESSION['tipo_usuario'] = $usuario['Tipo_usuario'];
+    $_SESSION['login'] = $usuario['Login'];
     $_SESSION['usuario_logado'] = true;
     $_SESSION['tentativas'] = 0; // Reiniciar o contador de tentativas
     header("Refresh:2; URL = index.php");

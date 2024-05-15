@@ -1,5 +1,6 @@
 <?php
           session_start();
+          ob_start();
           if (isset($_SESSION['username'])) {
             $tipo_usuario = $_SESSION['tipo_usuario'];
           }
@@ -29,7 +30,7 @@
   </head>
 
   <body>
-    <header id="home">
+  <header id="home">
       <nav class="cabecalho1">
         <ul class="nav justify-content-end aling-items-center">
           <li>
@@ -68,27 +69,26 @@
             /></a>
           </li>
           <li class="nav-item">
-            <a class="nav-link active text-light" href="index.php#contato"
-              >Contato</a
-            >
+            <a class="nav-link active text-light" href="#contato">Contato</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link text-light" href="index.php#endereco"
-              >Endereço</a
-            >
+            <a class="nav-link text-light" href="#endereco">Endereço</a>
           </li>
           <li class="nav-item">
             <a class="nav-link text-light" href="./login.php"
               >Área do Cliente</a
             >
+            <?php if(isset($_SESSION['usuario_logado'])): ?>
+              <li class="nav-item">
+            <a class="nav-link text-light" href="#"><?php echo $_SESSION['login'];?></a>
           </li>
-          <?php if(isset($_SESSION['usuario_logado'])): ?>
-            <li class="nav-item">
+              <li class="nav-item">
               <form action="logout.php" method="POST">
               <button type="submit" name="logout" class="log_off">Encerrar sessão</button></li>
               </form>
           </li>
           <?php endif; ?>
+          <li class="nav-item"></li>
         </ul>
       </nav>
       <nav class="navbar navbar-expand-lg navbar-light cabecalho2">
@@ -99,18 +99,18 @@
             width="100%"
             height="40"
         /></a>
-        <ul class="nav">
+        <ul class="navbar-nav">
           <li class="nav-item">
             <a class="nav-link text-light" href="index.php">Home</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link text-light" href="index.php#produtos">Produtos</a>
+            <a class="nav-link text-light" href="#produtos">Produtos</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link text-light" href="index.php#somos">Quem somos</a>
+            <a class="nav-link text-light" href="#somos">Quem somos</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link text-light" href="index.php#lancamentos">Lançamentos</a>
+            <a class="nav-link text-light" href="#lancamentos">Lançamentos</a>
           </li>
           <?php if($tipo_usuario == "M"): ?>
           <li class="nav-item dropdown">
@@ -128,6 +128,11 @@
           <a class="dropdown-item" href="mer.php">MER</a>
         </div>
       </li>
+      <?php endif; ?>
+      <?php if(isset($_SESSION['usuario_logado'])): ?>
+      <li class="nav-item">
+            <a class="nav-link text-light" href="mer.php">MER</a>
+          </li>
       <?php endif; ?>
         </ul>
       </nav>
@@ -166,8 +171,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             
             if ($usuario) {
                 // Credenciais corretas, proceda com o login
-                $_SESSION['username'] = $usuario['NomeCompleto'];
-                $_SESSION['tipo_usuario'] = $usuario['Tipo_usuario'];
                 header("Location: 2fa.php");
                 exit(); // Termina o script após o redirecionamento
             } else {
@@ -195,6 +198,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
               <input type="password" id="password" name="password" placeholder=""  />
               <small>Mensagem de erro</small>
             </div>
+            <button class="btnLogin" type="reset">Limpar</button>
             <button id="btnLogin" type="submit">Entrar</button>
           </form>
           <div class="form-section">

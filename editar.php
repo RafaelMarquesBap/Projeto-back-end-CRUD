@@ -159,14 +159,13 @@ if (!empty($dados['EditUsuario'])) {
         // Criptografar a senha
         $senha_hash = password_hash($dados['Senha'], PASSWORD_DEFAULT);
 
-        $query_usuario_edit = "UPDATE tb_Usuarios SET Tipo_usuario=:tipo_usuario, NomeCompleto=:nome_completo, DataNasc=:nascimento, Sexo=:sexo, 
+        $query_usuario_edit = "UPDATE tb_Usuarios SET NomeCompleto=:nome_completo, DataNasc=:nascimento, Sexo=:sexo, 
             NomeMaterno=:nome_materno, CPF=:cpf, Telefone_Celular=:tel_cel, 
             Telefone_Fixo=:tel_fixo, CEP=:cep, Endereco=:endereco, 
-            Complemento=:complemento, Bairro=:bairro, Cidade=:cidade, UF=:uf, Login=:login, Senha=:senha
+            Complemento=:complemento, Bairro=:bairro, Cidade=:cidade, UF=:uf, Login=:login
             WHERE idUsuario=:id";
 
         $edit_usuario = $conn->prepare($query_usuario_edit);
-        $edit_usuario->bindParam(':tipo_usuario', $dados['Tipo_usuario']);
         $edit_usuario->bindParam(':nome_completo', $dados['NomeCompleto']);
         $edit_usuario->bindParam(':nascimento', $dados['DataNasc']);
         $edit_usuario->bindParam(':sexo', $dados['Sexo']);
@@ -181,7 +180,6 @@ if (!empty($dados['EditUsuario'])) {
         $edit_usuario->bindParam(':cidade', $dados['Cidade']);
         $edit_usuario->bindParam(':uf', $dados['UF']);
         $edit_usuario->bindParam(':login', $dados['Login']);
-        $edit_usuario->bindParam(':senha', $senha_hash);
         $edit_usuario->bindParam(':id', $dados['idUsuario']);
 
         if ($edit_usuario->execute()) {
@@ -208,13 +206,7 @@ if (!empty($dados['EditUsuario'])) {
         if(isset($dados['NomeCompleto'])) {
             echo $dados['NomeCompleto'];
         } elseif(isset($row_usuario['NomeCompleto'])) { echo $row_usuario['NomeCompleto']; } ?>" required>
-        </div>
-        <div class="form-content">
-        <label for="NomeCompleto">Tipo de Usuário:</label>
-        <input type="text" class="form-control" name="Tipo_usuario" id="Tipo_usuario" placeholder="Tipo de usuário" value="<?php 
-        if(isset($dados['Tipo_usuario'])) {
-            echo $dados['Tipo_usuario'];
-        } elseif(isset($row_usuario['Tipo_usuario'])) { echo $row_usuario['Tipo_usuario']; } ?>" required>
+        <small>Mensagem de erro</small>
         </div>
         <div class="form-content">
         <label for="DataNasc">Data de Nascimento:</label>
@@ -232,7 +224,7 @@ if (!empty($dados['EditUsuario'])) {
                     if(isset($dados['Sexo'])) {
                         echo $dados['Sexo'];
                     } elseif(isset($row_usuario['Sexo'])) 
-            { echo $row_usuario['Sexo']; } ?>">
+            { echo $row_usuario['Sexo']; } ?>" required>
         </div>
         <div class="form-content">
         <label for="NomeMaterno">Nome Materno:</label>
@@ -321,14 +313,7 @@ if (!empty($dados['EditUsuario'])) {
                 if(isset($dados['Login'])) {
                     echo $dados['Login'];
                 } elseif(isset($row_usuario['Login'])) { echo $row_usuario['Login']; } ?>" required>
-        </div>
-        <div class="form-content">
-        <label for="Senha">Senha:</label>
-        <input type="text" class="form-control" name="Senha" id="Senha" 
-        placeholder="Senha" value="<?php 
-                if(isset($dados['Senha'])) {
-                    echo $dados['Senha'];
-                } elseif(isset($row_usuario['Senha'])) { echo $row_usuario['Senha']; } ?>" required>
+                <small>Mensagem de erro</small>
         </div>
         <a href="listar.php" class="btn btn-primary">Voltar</a>
         <input class="btn btn-primary"type="submit" value="Salvar" name="EditUsuario">
