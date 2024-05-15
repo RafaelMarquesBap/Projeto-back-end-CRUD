@@ -106,60 +106,103 @@
     <section  class="container">
     <div>
     <?php
-session_start(); // Inicia a sessão
+session_start();
 ob_start();
 require_once 'conexao.php';
 
-$birthday = $_POST['birthday'];
-$momname = $_POST['momname'];    
-$cep = $_POST['cep'];
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $birthday = $_POST['birthday'];
+    $momname = $_POST['momname'];    
+    $cep = $_POST['cep'];
+    $perguntas = isset($_SESSION['pergunta']) ? $_SESSION['pergunta'] : rand(1, 3); // Operador ternário
 
-if (!isset($_SESSION['tentativas'])) {
-    $_SESSION['tentativas'] = 0;
-}
+    $resposta = null;
+    $tipo2fa = null;
 
-if ($_SESSION['tentativas'] >= 3) {
-    $_SESSION['msg'] = "<p class='msgError'>Quantidade de tentativas excedidas! Tente novamente.</p>";
-    unset($_SESSION['tentativas']); // Remover a variável de tentativas
-    header('Location: login.php');
-    exit();
-}
+    switch ($perguntas) {
+        case 1:
+            $tipo2fa = "Nome Materno";
+            $resposta = $momname;  
+            break;
+      
+        case 2:
+            $tipo2fa = "Data de Nascimento";
+            $resposta = $birthday;
+            break;
+      
+        case 3:
+            $tipo2fa = "CEP";
+            $resposta = $cep;
+            break;
+    }
 
-$stmt = $conn->prepare("SELECT * FROM tb_Usuarios WHERE DataNasc = :birthday OR NomeMaterno = :momname OR CEP = :cep");
-$stmt->bindParam(':birthday', $birthday);
-$stmt->bindParam(':momname', $momname);
-$stmt->bindParam(':cep', $cep);
-$stmt->execute();
-$usuario = $stmt->fetch(PDO::FETCH_ASSOC);
+    if (!isset($_SESSION['tentativas'])) {
+        $_SESSION['tentativas'] = 0;
+    }
 
-if ($resultado = $stmt->rowCount() > 0) {
-    // Se a autenticação for bem-sucedida
-    echo "<div style='text-align: center; margin-top: 100px;'>";
-    echo "<h1 class='msgSuccess'>Autenticação bem-sucedida! Redirecionando para a página principal...</h1>";
-    echo "</div>";
-    $_SESSION['username'] = $usuario['NomeCompleto'];
-    $_SESSION['tipo_usuario'] = $usuario['Tipo_usuario'];
-    $_SESSION['login'] = $usuario['Login'];
-    $_SESSION['usuario_logado'] = true;
-    $_SESSION['tentativas'] = 0; // Reiniciar o contador de tentativas
-    header("Refresh:2; URL = index.php");
-    exit();
-} else {
-    // Se a autenticação falhar
-    $_SESSION['tentativas']++;
     if ($_SESSION['tentativas'] >= 3) {
         $_SESSION['msg'] = "<p class='msgError'>Quantidade de tentativas excedidas! Tente novamente.</p>";
         unset($_SESSION['tentativas']); // Remover a variável de tentativas
         header('Location: login.php');
         exit();
-    } else {
-        echo "<h1 class='p1'>Autenticação incorreta! Tente novamente.</h1>";
-        echo "<div class='text-center'>";
-        echo "<a href='2fa.php' class='btn btn-info btn-lg'>Voltar</a>";
+    }
+
+    $stmt = $conn->prepare("SELECT * FROM tb_Usuarios WHERE DataNasc = :birthday OR NomeMaterno = :momname OR CEP = :cep");
+    $stmt->bindParam(':birthday', $birthday);
+    $stmt->bindParam(':momname', $momname);
+    $stmt->bindParam(':cep', $cep);
+    $stmt->execute();
+    $usuario = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    $dataLogin = date('Y-m-d H:i:s');
+    $idUsuario = isset($_SESSION['id_usuario']) ? $_SESSION['id_usuario'] : null;
+
+    if ($stmt->rowCount() > 0) {
+        // Se a autenticação for bem-sucedida
+        echo "<div style='text-align: center; margin-top: 100px;'>";
+        echo "<h1 class='msgSuccess'>Autenticação bem-sucedida! Redirecionando para a página principal...</h1>";
         echo "</div>";
+        $_SESSION['username'] = $usuario['NomeCompleto'];
+        $_SESSION['tipo_usuario'] = $usuario['Tipo_usuario'];
+        $_SESSION['login'] = $usuario['Login'];
+        $_SESSION['usuario_logado'] = true;
+        $_SESSION['tentativas'] = 0;
+        $status = "OK"; 
+        header("Refresh:2;URL = index.php");
+          } else {
+        // Se a autenticação falhar
+        $_SESSION['tentativas']++;
+        if ($_SESSION['tentativas'] >= 3) {
+            $_SESSION['msg'] = "<p class='msgError'>Quantidade de tentativas excedidas! Tente novamente.</p>";
+            unset($_SESSION['tentativas']);
+            $status = "Falha"; 
+            header("Location: login.php");
+        } else {
+            echo "<h1 class='p1'>Autenticação incorreta! Tente novamente.</h1>";
+            echo "<div class='text-center'>";
+            echo "<a href='2fa.php' class='btn btn-info btn-lg'>Voltar</a>";
+            echo "</div>";
+            exit(); 
+        }
+    }
+
+    // Inserção na tabela tb_Log
+    $sql = "INSERT INTO tb_Log (DataLogin, Tipo2FA, idUsuario, Status, Resposta2FA) VALUES (?, ?, ?, ?, ?)";
+    $stmt2 = $conn->prepare($sql);
+    $stmt2->bindParam(1, $dataLogin);
+    $stmt2->bindParam(2, $tipo2fa);
+    $stmt2->bindParam(3, $idUsuario);
+    $stmt2->bindParam(4, $status);
+    $stmt2->bindParam(5, $resposta);
+    $stmt2->execute();
+
+    // Redirecionamento apenas se a autenticação for ok
+    if ($status === "OK") {
+        
     }
 }
 ?>
+
     </div>
     </section>
     

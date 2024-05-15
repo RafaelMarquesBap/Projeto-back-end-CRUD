@@ -4,7 +4,7 @@
           if (isset($_SESSION['username'])) {
             $tipo_usuario = $_SESSION['tipo_usuario'];
           }
-          print_r($_SESSION);
+          
 
 ?>
 <!DOCTYPE html>

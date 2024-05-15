@@ -104,9 +104,11 @@
       </nav>
     </header>
 <?php
+session_start();
+$_SESSION['pergunta'] = rand(1,3);
 
-$perguntas = rand(1,3);
-
+$perguntas = $_SESSION['pergunta'];
+print_r($_SESSION);
 switch($perguntas):
 
     case 1:
