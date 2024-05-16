@@ -160,11 +160,8 @@ if (!isset($_SESSION['usuario_logado']) OR $_SESSION['usuario_logado'] !== true 
           </section>
           <div>
           <?php
+session_start();
 require_once "conexao.php";
-if(isset($_SESSION['msg'])) {
-  echo $_SESSION['msg'];
-  unset($_SESSION['msg']);
-}
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if (isset($_POST['login']) && isset($_POST['password'])) {
@@ -174,23 +171,35 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         if (empty($login) || empty($password)) {
             echo "<p class='msgError'>Erro: Necessário preencher todos os campos!</p>";
         } else {
-            $stmt = $conn->prepare("SELECT * FROM tb_Usuarios WHERE Login = :login AND Senha = :senha");
+            // Buscar a senha armazenada no banco de dados para o login fornecido
+            $stmt = $conn->prepare("SELECT Senha FROM tb_Usuarios WHERE Login = :login");
             $stmt->bindParam(':login', $login);
-            $stmt->bindParam(':senha', $password);
             $stmt->execute();
-            $usuario = $stmt->fetch(PDO::FETCH_ASSOC);
-            
-            if ($usuario) {
-                // Credenciais corretas, proceda com o login
-                $_SESSION['id_usuario'] = $usuario['idUsuario'];
-                $_SESSION['login'] = $usuario['Login'];
-                $_SESSION['username'] = $usuario['NomeCompleto'];
-                $_SESSION['tipo_usuario'] = $usuario['Tipo_usuario'];
-                $_SESSION['usuario_logado'] = true;
-                header("Location: 2fa.php");
-                exit(); // Termina o script após o redirecionamento
+            $senhaArmazenada = $stmt->fetchColumn();
+
+            if ($senhaArmazenada) {
+                // Senha encontrada, comparar com a senha digitada usando password_verify()
+                if (password_verify($password, $senhaArmazenada)) {
+                    // Senha correta, buscar os detalhes do usuário
+                    $stmt = $conn->prepare("SELECT * FROM tb_Usuarios WHERE Login = :login");
+                    $stmt->bindParam(':login', $login);
+                    $stmt->execute();
+                    $usuario = $stmt->fetch(PDO::FETCH_ASSOC);
+                    
+                    // Definir as variáveis de sessão
+                    $_SESSION['id_usuario'] = $usuario['idUsuario'];
+                    $_SESSION['login'] = $usuario['Login'];
+                    $_SESSION['username'] = $usuario['NomeCompleto'];
+                    $_SESSION['tipo_usuario'] = $usuario['Tipo_usuario'];
+                    $_SESSION['usuario_logado'] = true;
+                    header("Location: 2fa.php");
+                    exit(); // Terminar o script após o redirecionamento
+                } else {
+                    // Senha incorreta, exibir uma mensagem de erro
+                    echo "<p class='msgError'>Erro: Login e/ou senha incorretos!</p>";
+                }
             } else {
-                // Credenciais incorretas, exiba uma mensagem de erro
+                // Login não encontrado, exibir uma mensagem de erro
                 echo "<p class='msgError'>Erro: Login e/ou senha incorretos!</p>";
             }
         }            
@@ -199,6 +208,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 }
 ?>
+
           </div>
           <form class="form" id="form" action="" method="POST">
             <div class="form-content">

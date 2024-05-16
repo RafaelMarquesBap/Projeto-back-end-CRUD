@@ -157,7 +157,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $sql->bindValue(':cidade', $cidade);
             $sql->bindValue(':uf', $uf);
             $sql->bindValue(':login', $login);
-            $sql->bindValue(':senha', $password);
+            $sql->bindValue(':senha', $senha_hash);
 
             $sql->execute();
 
