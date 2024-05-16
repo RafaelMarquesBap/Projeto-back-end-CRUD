@@ -1,3 +1,10 @@
+<?php
+session_start();
+if (!isset($_SESSION['username'])) {
+  $tipo_usuario = $_SESSION['tipo_usuario'];
+  header("Location: login.php");
+}
+?>
 <!DOCTYPE html>
 <html lang="pt-br">
   <head>
@@ -147,7 +154,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         exit();
     }
 
-    $stmt = $conn->prepare("SELECT * FROM tb_Usuarios WHERE DataNasc = :birthday OR NomeMaterno = :momname OR CEP = :cep");
+    $idUsuario = isset($_SESSION['id_usuario']) ? $_SESSION['id_usuario'] : null;
+
+    $stmt = $conn->prepare("SELECT * FROM tb_Usuarios WHERE idUsuario = :id_usuario AND (DataNasc = :birthday OR NomeMaterno = :momname OR CEP = :cep)");
+    $stmt->bindParam(':id_usuario', $idUsuario);
     $stmt->bindParam(':birthday', $birthday);
     $stmt->bindParam(':momname', $momname);
     $stmt->bindParam(':cep', $cep);
@@ -155,7 +165,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $usuario = $stmt->fetch(PDO::FETCH_ASSOC);
 
     $dataLogin = date('Y-m-d H:i:s');
-    $idUsuario = isset($_SESSION['id_usuario']) ? $_SESSION['id_usuario'] : null;
+ 
 
     if ($stmt->rowCount() > 0) {
         // Se a autenticação for bem-sucedida
@@ -167,6 +177,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $_SESSION['login'] = $usuario['Login'];
         $_SESSION['usuario_logado'] = true;
         $_SESSION['tentativas'] = 0;
+        $_SESSION['usuario_autenticado'] = true;
         $status = "OK"; 
         header("Refresh:2;URL = index.php");
           } else {

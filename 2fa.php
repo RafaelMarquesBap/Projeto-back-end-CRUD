@@ -1,3 +1,10 @@
+<?php
+session_start();
+if (!isset($_SESSION['username'])) {
+  $tipo_usuario = $_SESSION['tipo_usuario'];
+  header("Location: login.php");
+}
+?>
 <!DOCTYPE html>
 <html lang="pt-br">
   <head>

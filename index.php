@@ -5,7 +5,13 @@ require_once 'conexao.php';
 if (isset($_SESSION['username'])) {
   $tipo_usuario = $_SESSION['tipo_usuario'];
 }
+// Verifica se o usuário está autenticado e passou pelo 2FA
+if (!isset($_SESSION['usuario_logado']) OR $_SESSION['usuario_logado'] !== true OR !isset($_SESSION['usuario_autenticado']) OR $_SESSION['usuario_autenticado'] !== true) {
 
+  session_unset();
+}
+
+// Se chegou aqui, o usuário está autenticado e passou pelo 2FA
 print_r($_SESSION);
 
 ?>

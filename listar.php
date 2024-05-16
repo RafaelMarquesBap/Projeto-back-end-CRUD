@@ -9,6 +9,16 @@ if (isset($_SESSION['username'])) {
   $tipo_usuario = $_SESSION['tipo_usuario'];
 }
 
+if($_SESSION['tipo_usuario'] !== "M"){
+  header("Location: index.php");
+}
+
+// Verifica se o usuário está autenticado e passou pelo 2FA
+if (!isset($_SESSION['usuario_logado']) OR $_SESSION['usuario_logado'] !== true OR !isset($_SESSION['usuario_autenticado']) OR $_SESSION['usuario_autenticado'] !== true) {
+  session_unset();
+  header('Location: login.php');
+}
+
 ?>
 <!DOCTYPE html>
 <html lang="pt-br">
@@ -81,6 +91,9 @@ if (isset($_SESSION['username'])) {
             <?php if(isset($_SESSION['usuario_logado'])): ?>
               <li class="nav-item">
             <a class="nav-link text-light" href="#"><?php echo $_SESSION['login'];?></a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link text-light" href=""><?php echo $_SESSION['tipo_usuario'];?></a>
           </li>
               <li class="nav-item">
               <form action="logout.php" method="POST">

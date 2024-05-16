@@ -4,6 +4,14 @@
           if (isset($_SESSION['username'])) {
             $tipo_usuario = $_SESSION['tipo_usuario'];
           }
+
+          // Verifica se o usuário está autenticado e passou pelo 2FA
+if (!isset($_SESSION['usuario_logado']) OR $_SESSION['usuario_logado'] !== true OR !isset($_SESSION['usuario_autenticado']) OR $_SESSION['usuario_autenticado'] !== true) {
+  session_unset();
+}
+
+
+          
           
 
 ?>
@@ -81,6 +89,9 @@
             <?php if(isset($_SESSION['usuario_logado'])): ?>
               <li class="nav-item">
             <a class="nav-link text-light" href="#"><?php echo $_SESSION['login'];?></a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link text-light" href=""><?php echo $_SESSION['tipo_usuario'];?></a>
           </li>
               <li class="nav-item">
               <form action="logout.php" method="POST">
@@ -171,6 +182,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             
             if ($usuario) {
                 // Credenciais corretas, proceda com o login
+                $_SESSION['id_usuario'] = $usuario['idUsuario'];
+                $_SESSION['login'] = $usuario['Login'];
+                $_SESSION['username'] = $usuario['NomeCompleto'];
+                $_SESSION['tipo_usuario'] = $usuario['Tipo_usuario'];
+                $_SESSION['usuario_logado'] = true;
                 header("Location: 2fa.php");
                 exit(); // Termina o script após o redirecionamento
             } else {
