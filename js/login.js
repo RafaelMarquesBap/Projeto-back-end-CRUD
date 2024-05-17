@@ -1,11 +1,13 @@
-const form = document.getElementById("form");
+const login = document.querySelector("#login");
+const password = document.querySelector("#password");
 
-const btnLogin = document.getElementById("btnLogin");
+const form = document.querySelector("#form");
 
-const btn = document.querySelector(".fa-eye");
-const btnHidden = document.querySelector(".fa-eye-slash");
+const btn = document.querySelector("#seePassword");
+const btnHidden = document.querySelector("#hidePassword");
 
-const btnLogout = document.querySelector(".log-off");
+const btnConfirm = document.querySelector("#seePasswordTwo");
+const btnConfirmHidden = document.querySelector("#hidePasswordTwo");
 
 btn.addEventListener("click", () => {
   const inputPassword = document.querySelector("#password");
@@ -32,84 +34,106 @@ btnHidden.addEventListener("click", () => {
 });
 
 form.addEventListener("submit", (event) => {
-  event.preventDefault();
+  // Chame a função para validar o formulário
+  if (!validateForm()) {
+    // Se a validação falhar, impeça o envio do formulário
+    event.preventDefault();
 
-  enter();
-});
+    const firstInvalidInput = document.querySelector(
+      ".form-content.error input"
+    );
 
-btnLogin.addEventListener("click", function enter() {
-  let login = document.getElementById("login");
-  let loginLabel = document.querySelector("#loginLabel");
-
-  let password = document.getElementById("password");
-  let passwordLabel = document.querySelector("#passwordLabel");
-
-  let msgError = document.querySelector("#msgError");
-
-  let userList = [];
-
-  let userValid = {
-    login: "",
-    password: "",
-  };
-
-  userList = JSON.parse(localStorage.getItem("userList"));
-
-  userList.forEach((item) => {
-    if (login.value == item.loginCad && password.value == item.passwordCad) {
-      userValid = {
-        login: item.loginCad,
-        password: item.passwordCad,
-      };
-    }
-  });
-
-  if (login.value == "" && password.value == "") {
-    msgError.setAttribute("style", "display: block");
-    msgError.innerHTML = "Login e senha devem ser preenchidos ";
-    loginLabel.setAttribute("style", "color:red");
-    login.setAttribute("style", "border-color:red");
-    passwordLabel.setAttribute("style", "color:red");
-    password.setAttribute("style", "border-color:red");
-  } else if (
-    login.value == userValid.login &&
-    password.value == userValid.password
-  ) {
-    msgSuccess.setAttribute("style", "display: block");
-    msgSuccess.innerHTML = "<strong>Logando usuário...</strong>";
-    msgError.innerHTML = "";
-    msgError.setAttribute("style", "display: none");
-    loginLabel.setAttribute("style", "color:#4eca64");
-    login.setAttribute("style", "border-color:#4eca64");
-    passwordLabel.setAttribute("style", "color:#4eca64");
-    password.setAttribute("style", "border-color:#4eca64");
-
-    // let token =
-    //   Math.random().toString(16).substring(2) +
-    //   Math.random().toString(16).substring(2);
-    // localStorage.setItem("token", token);
-
-    setTimeout(() => {
-      window.location.href = "2fa.php";
-    }, 3000);
-
-    localStorage.setItem("userLogin", JSON.stringify(userValid));
-  } else {
-    loginLabel.setAttribute("style", "color:red");
-    login.setAttribute("style", "border-color:red");
-    passwordLabel.setAttribute("style", "color:red");
-    password.setAttribute("style", "border-color:red");
-    msgError.setAttribute("style", "display: block");
-    msgError.innerHTML = "Login ou senha incorretos";
-    login.focus();
+    // Rola a página até o primeiro campo com erro
+    firstInvalidInput.scrollIntoView({ behavior: "smooth" });
   }
 });
 
+// Valida o login
+function checkInputLogin() {
+  const loginValue = login.value.trim();
+
+  if (loginValue === "") {
+    errorInput(login, "Login é obrigatório.");
+    validLogin = false;
+    return false;
+  } else if (loginValue.length != 6) {
+    errorInput(login, "Login precisa ter exatamente 6 caracteres.");
+    validLogin = false;
+    return false;
+  } else {
+    successInput(login);
+    validLogin = true;
+    return true;
+  }
+}
+
+// Exibir erro/sucesso ao digitar
+login.addEventListener("input", () => {
+  checkInputLogin();
+});
+
+// Exibir erro/sucesso ao tirar o foco
+login.addEventListener("blur", () => {
+  checkInputLogin();
+});
+
+function checkInputPassword() {
+  const passwordValue = password.value.trim();
+
+  if (passwordValue === "") {
+    errorInput(password, "Senha é obrigatório.");
+    validPassword = false;
+    return false;
+  } else if (passwordValue.length != 8) {
+    errorInput(password, "Senha precisa ter exatamente 8 caracteres.");
+    validPassword = false;
+    return false;
+  } else {
+    successInput(password);
+    validPassword = true;
+    return true;
+  }
+}
+
+// Exibir erro/sucesso ao digitar
+password.addEventListener("input", () => {
+  checkInputPassword();
+});
+
+// Exibir erro/sucesso ao tirar o foco
+password.addEventListener("blur", () => {
+  checkInputPassword();
+});
+
+// Imprimir mensagem de erro
 function errorInput(input, message) {
+  console.log("Exibindo mensagem de erro:", message);
   const formItem = input.parentElement;
-  const textMessage = formItem.querySelector("small");
+  let small = formItem.querySelector("small");
 
-  textMessage.innerText = message;
+  if (!small) {
+    small = document.createElement("small");
+    formItem.appendChild(small);
+  }
 
+  small.innerText = message;
   formItem.className = "form-content error";
+}
+
+// Sucesso
+function successInput(input) {
+  console.log("Removendo mensagem de erro.");
+  const formItem = input.parentElement;
+  formItem.classList.remove("error");
+  formItem.classList.add("success");
+}
+
+function validateForm() {
+  // Chame todas as funções de validação individual para cada campo
+  const isPasswordValid = checkInputPassword();
+  const isLoginValid = checkInputLogin();
+
+  // Verifique se todas as validações são verdadeiras
+  // Se alguma delas falhar, retorne false
+  return isPasswordValid && isLoginValid;
 }
