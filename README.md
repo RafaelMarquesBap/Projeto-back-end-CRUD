@@ -5,6 +5,7 @@ Solicitado por uma empresa fictícia, onde tive que fazer um CRUD para o cliente
 Usuário Master pode ver as informações cadastradas pela tela de cadastro dos usuários comuns, bem como adicionar, alterar e excluir as mesmas.
 
 ## Competências Utilizadas
+
 - PHP
 - SQL
 - HTML
@@ -13,3 +14,7 @@ Usuário Master pode ver as informações cadastradas pela tela de cadastro dos 
 - Modelagem do banco de dados
 - DER
 - MER
+
+## Observações:
+
+Para funcionar corretamente, é necessário mudar a senha do arquivo de conexao.php.
