@@ -140,7 +140,7 @@ if (!isset($_SESSION['usuario_logado']) OR $_SESSION['usuario_logado'] !== true 
           <a class="dropdown-item" href="area_cliente.php">Cadastrar Usuários
           </a>
           <div class="dropdown-divider"></div>
-          <a class="dropdown-item" href="mer.php">MER</a>
+          <a class="dropdown-item" href="tela_log.php">Log</a>
         </div>
       </li>
       <?php endif; ?>
