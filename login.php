@@ -14,7 +14,8 @@ if (!isset($_SESSION['usuario_logado']) OR $_SESSION['usuario_logado'] !== true 
   unset($_SESSION['usuario_autenticado']);
 }
 
-
+// Definir valor mesmo se a sessão não existir. (parar aquele erro chato)
+$tipo_usuario = isset($_SESSION['tipo_usuario']) ? $_SESSION['tipo_usuario'] : null;
           
           
 

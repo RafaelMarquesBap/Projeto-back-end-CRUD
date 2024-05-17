@@ -6,6 +6,10 @@ if (!isset($_SESSION['username'])) {
   $tipo_usuario = $_SESSION['tipo_usuario'];
   header("Location: login.php");
 }
+
+// Definir valor mesmo se a sessão não existir. (parar aquele erro chato)
+$tipo_usuario = isset($_SESSION['tipo_usuario']) ? $_SESSION['tipo_usuario'] : null;
+
 ?>
 <!DOCTYPE html>
 <html lang="pt-br">
