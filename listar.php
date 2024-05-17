@@ -1,5 +1,7 @@
 <?php
 session_start();
+ob_start();
+require_once "conexao.php";
 if (!isset($_SESSION['username'])) {
   $tipo_usuario = $_SESSION['tipo_usuario'];
   header("Location: login.php");
@@ -191,7 +193,6 @@ if (!isset($_SESSION['usuario_logado']) OR $_SESSION['usuario_logado'] !== true 
         </thead>
         <tbody>
           <?php
-          require_once "conexao.php";
 
 
           // Receber o numero da pagina

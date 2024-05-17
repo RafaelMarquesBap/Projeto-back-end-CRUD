@@ -1,13 +1,17 @@
 <?php
           session_start();
           ob_start();
+          require_once "conexao.php";
           if (isset($_SESSION['username'])) {
             $tipo_usuario = $_SESSION['tipo_usuario'];
           }
 
           // Verifica se o usuário está autenticado e passou pelo 2FA
 if (!isset($_SESSION['usuario_logado']) OR $_SESSION['usuario_logado'] !== true OR !isset($_SESSION['usuario_autenticado']) OR $_SESSION['usuario_autenticado'] !== true) {
-  session_unset();
+  unset($_SESSION['usuario_logado']);
+  unset($_SESSION['tipo_usuario']);
+  unset($_SESSION['username']);
+  unset($_SESSION['usuario_autenticado']);
 }
 
 
@@ -34,7 +38,7 @@ if (!isset($_SESSION['usuario_logado']) OR $_SESSION['usuario_logado'] !== true 
       href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"
     />
     <link rel="stylesheet" href="css/login.css" />
-    <title>O Rafaelo</title>
+    <title>O Rafaelo - Login</title>
   </head>
 
   <body>
@@ -160,8 +164,7 @@ if (!isset($_SESSION['usuario_logado']) OR $_SESSION['usuario_logado'] !== true 
           </section>
           <div>
           <?php
-session_start();
-require_once "conexao.php";
+
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if (isset($_POST['login']) && isset($_POST['password'])) {
@@ -219,8 +222,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
             <div class="form-content">
               <label id="passwordLabel" for="password">Senha</label>
-              <i class="fa fa-eye fa-lg" aria-hidden="true"></i>
-              <i class="fa fa-eye-slash fa-lg" aria-hidden="true"></i>
+              <i
+                id="seePassword"
+                class="fa fa-eye fa-lg"
+                aria-hidden="true"
+              ></i>
+              <i
+                id="hidePassword"
+                class="fa fa-eye-slash fa-lg"
+                aria-hidden="true"
+              ></i>
               <input type="password" id="password" name="password" placeholder=""  />
               <small>Mensagem de erro</small>
             </div>
@@ -314,6 +325,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
       crossorigin="anonymous"
     ></script>
     <script src="js/dark_mode.js"></script>
+    <script src="js/login.js"></script>
   </body>
 </html>
 

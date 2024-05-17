@@ -1,3 +1,9 @@
+<?php
+session_start();
+ob_start();
+require_once "conexao.php";
+?>
+
 <html lang="pt-br">
   <head>
     <meta charset="UTF-8" />
@@ -105,9 +111,6 @@
   
     <div>
     <?php
-session_start();
-require_once "conexao.php";
-
 if (!isset($_SESSION['username'])) {
   $tipo_usuario = $_SESSION['tipo_usuario'];
   header("Location: login.php");

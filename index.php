@@ -127,7 +127,7 @@ print_r($_SESSION);
           <a class="dropdown-item" href="area_cliente.php">Cadastrar Usuários
           </a>
           <div class="dropdown-divider"></div>
-          <a class="dropdown-item" href="mer.php">MER</a>
+          <a class="dropdown-item" href="tela_log.php">Log</a>
         </div>
       </li>
       <?php endif; ?>

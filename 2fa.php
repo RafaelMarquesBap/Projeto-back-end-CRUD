@@ -111,7 +111,6 @@ if (!isset($_SESSION['username'])) {
       </nav>
     </header>
 <?php
-session_start();
 $_SESSION['pergunta'] = rand(1,3);
 
 $perguntas = $_SESSION['pergunta'];

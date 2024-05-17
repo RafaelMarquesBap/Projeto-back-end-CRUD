@@ -1,5 +1,7 @@
 <?php
           session_start();
+          ob_start();
+          require_once "conexao.php";
           if (isset($_SESSION['username'])) {
             $tipo_usuario = $_SESSION['tipo_usuario'];
           }

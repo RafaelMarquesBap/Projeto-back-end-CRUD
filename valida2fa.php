@@ -1,5 +1,7 @@
 <?php
 session_start();
+ob_start();
+require_once "conexao.php";
 if (!isset($_SESSION['username'])) {
   $tipo_usuario = $_SESSION['tipo_usuario'];
   header("Location: login.php");
@@ -113,9 +115,6 @@ if (!isset($_SESSION['username'])) {
     <section  class="container">
     <div>
     <?php
-session_start();
-ob_start();
-require_once 'conexao.php';
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $birthday = $_POST['birthday'];
@@ -193,6 +192,21 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             echo "<div class='text-center'>";
             echo "<a href='2fa.php' class='btn btn-info btn-lg'>Voltar</a>";
             echo "</div>";
+            $status = "Falha";
+                // Inserção na tabela tb_Log
+    $sql = "INSERT INTO tb_Log (DataLogin, Tipo2FA, idUsuario, Status, Resposta2FA) VALUES (?, ?, ?, ?, ?)";
+    $stmt2 = $conn->prepare($sql);
+    $stmt2->bindParam(1, $dataLogin);
+    $stmt2->bindParam(2, $tipo2fa);
+    $stmt2->bindParam(3, $idUsuario);
+    $stmt2->bindParam(4, $status);
+    $stmt2->bindParam(5, $resposta);
+    $stmt2->execute();
+
+    // Redirecionamento apenas se a autenticação for ok
+    if ($status === "OK") {
+        
+    }
             exit(); 
         }
     }
