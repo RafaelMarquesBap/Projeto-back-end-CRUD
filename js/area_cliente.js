@@ -104,9 +104,9 @@ form.addEventListener("submit", (event) => {
     msgError.innerHTML = "";
     msgError.setAttribute("style", "display: none");
     console.log("Formulário válido. Enviando formulário...");
-      setTimeout(() => {
-    window.location.href = "cadastrar.php";
-  }, 3000);
+    setTimeout(() => {
+      window.location.href = "cadastrar.php";
+    }, 3000);
   }
 });
 
@@ -418,16 +418,34 @@ function checkInputUsername() {
 // ----------------VERIFICAR SE DATA DE NASCIMENTO ESTÁ CORRETO-----------------------
 function checkInputBirthday() {
   const birthdayValue = birthday.value;
+  const dataNascimento = new Date(birthdayValue);
+  const dataAtual = new Date();
 
+  // Verifica se o valor está vazio
   if (birthdayValue === "") {
     errorInput(birthday, "Data de nascimento é obrigatória.");
     validBirthday = false;
     return false;
-  } else {
-    successInput(birthday);
-    validBirthday = true;
-    return true;
   }
+
+  // Verifica se a data é válida
+  if (isNaN(dataNascimento.getTime())) {
+    errorInput(birthday, "Data de nascimento inválida.");
+    validBirthday = false;
+    return false;
+  }
+
+  // Verifica se a data de nascimento é no futuro
+  if (dataNascimento > dataAtual) {
+    errorInput(birthday, "Data de nascimento inválida.");
+    validBirthday = false;
+    return false;
+  }
+
+  // Se todas as verificações passarem
+  successInput(birthday);
+  validBirthday = true;
+  return true;
 }
 
 // ----------------VERIFICAR SE GENÊRO ESTÁ CORRETO-----------------------

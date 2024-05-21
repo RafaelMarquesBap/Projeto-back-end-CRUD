@@ -80,21 +80,38 @@ if (isset($_SESSION['username'])) {
             /></a>
           </li>
           <li class="nav-item">
-            <a class="nav-link active text-light" href="#contato">Contato</a>
+            <a class="nav-link active text-light" href="index.php#contato">Contato</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link text-light" href="#endereco">Endereço</a>
+            <a class="nav-link text-light" href="index.php#endereco">Endereço</a>
           </li>
-          <li class="nav-item">
-            <a class="nav-link text-light" href="./login.php"
-              >Área do Cliente</a
-            >
+          <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle text-light" href="#" id="navbarDropdown" 
+            role="button" data-toggle="dropdown" 
+            aria-haspopup="true" aria-expanded="false">
+          Área do Cliente
+        </a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+          <a class="dropdown-item" href="login.php">Acesse sua conta
+          </a>
+          <a class="dropdown-item" href="area_cliente.php">Se torne um cliente
+          </a>
+          <?php if(isset($_SESSION['usuario_logado'])): ?>
+          <a class="dropdown-item" href="altera.php">Altere sua senha
+          </a>
+          <?php endif; ?>
+      </li>
             <?php if(isset($_SESSION['usuario_logado'])): ?>
               <li class="nav-item">
             <a class="nav-link text-light" href="#"><?php echo $_SESSION['login'];?></a>
           </li>
           <li class="nav-item">
-            <a class="nav-link text-light" href=""><?php echo $_SESSION['tipo_usuario'];?></a>
+            <a class="nav-link text-light" href=""><?php if($_SESSION['tipo_usuario'] == "M")
+            {
+              echo "Usuário Master";
+            } else {
+              echo "Usuário Comum";
+            };?></a>
           </li>
               <li class="nav-item">
               <form action="logout.php" method="POST">
@@ -102,7 +119,6 @@ if (isset($_SESSION['username'])) {
               </form>
           </li>
           <?php endif; ?>
-          <li class="nav-item"></li>
         </ul>
       </nav>
       <nav class="navbar navbar-expand-lg navbar-light cabecalho2">
@@ -118,13 +134,13 @@ if (isset($_SESSION['username'])) {
             <a class="nav-link text-light" href="index.php">Home</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link text-light" href="#produtos">Produtos</a>
+            <a class="nav-link text-light" href="index.php#produtos">Produtos</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link text-light" href="#somos">Quem somos</a>
+            <a class="nav-link text-light" href="index.php#somos">Quem somos</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link text-light" href="#lancamentos">Lançamentos</a>
+            <a class="nav-link text-light" href="index.php#lancamentos">Lançamentos</a>
           </li>
           <?php if($tipo_usuario == "M"): ?>
           <li class="nav-item dropdown">
@@ -162,7 +178,7 @@ if (isset($_SESSION['username'])) {
       <table class="table">
         <thead>
           <tr>
-            <th>ID</th>
+            <th>#</th>
             <th>Nome Completo</th>
             <th>Data de Nascimento</th>
             <th>Sexo</th>

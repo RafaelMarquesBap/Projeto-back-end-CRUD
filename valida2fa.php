@@ -82,12 +82,41 @@ $tipo_usuario = isset($_SESSION['tipo_usuario']) ? $_SESSION['tipo_usuario'] : n
               >Endereço</a
             >
           </li>
-          <li class="nav-item">
-            <a class="nav-link text-light" href="./login.php"
-              >Área do Cliente</a
-            >
+          <li class="nav-item dropdown">
+          <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle text-light" href="#" id="navbarDropdown" 
+            role="button" data-toggle="dropdown" 
+            aria-haspopup="true" aria-expanded="false">
+          Área do Cliente
+        </a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+          <a class="dropdown-item" href="login.php">Acesse sua conta
+          </a>
+          <a class="dropdown-item" href="area_cliente.php">Se torne um cliente
+          </a>
+          <?php if(isset($_SESSION['usuario_logado'])): ?>
+          <a class="dropdown-item" href="altera.php">Altere sua senha
+          </a>
+          <?php endif; ?>
+      </li>
+            <?php if(isset($_SESSION['usuario_logado'])): ?>
+              <li class="nav-item">
+            <a class="nav-link text-light" href="#"><?php echo $_SESSION['login'];?></a>
           </li>
-          <li class="nav-item"></li>
+          <li class="nav-item">
+            <a class="nav-link text-light" href=""><?php if($_SESSION['tipo_usuario'] == "M")
+            {
+              echo "Usuário Master";
+            } else {
+              echo "Usuário Comum";
+            };?></a>
+          </li>
+              <li class="nav-item">
+              <form action="logout.php" method="POST">
+              <button type="submit" name="logout" class="log_off">Encerrar sessão</button></li>
+              </form>
+          </li>
+          <?php endif; ?>
         </ul>
       </nav>
       <nav class="navbar navbar-expand-lg navbar-light cabecalho2">

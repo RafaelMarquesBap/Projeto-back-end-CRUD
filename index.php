@@ -73,16 +73,33 @@ print_r($_SESSION);
           <li class="nav-item">
             <a class="nav-link text-light" href="#endereco">Endereço</a>
           </li>
-          <li class="nav-item">
-            <a class="nav-link text-light" href="./login.php"
-              >Área do Cliente</a
-            >
+          <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle text-light" href="#" id="navbarDropdown" 
+            role="button" data-toggle="dropdown" 
+            aria-haspopup="true" aria-expanded="false">
+          Área do Cliente
+        </a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+          <a class="dropdown-item" href="login.php">Acesse sua conta
+          </a>
+          <a class="dropdown-item" href="area_cliente.php">Se torne um cliente
+          </a>
+          <?php if(isset($_SESSION['usuario_logado'])): ?>
+          <a class="dropdown-item" href="altera.php">Altere sua senha
+          </a>
+          <?php endif; ?>
+      </li>
             <?php if(isset($_SESSION['usuario_logado'])): ?>
               <li class="nav-item">
             <a class="nav-link text-light" href="#"><?php echo $_SESSION['login'];?></a>
           </li>
           <li class="nav-item">
-            <a class="nav-link text-light" href=""><?php echo $_SESSION['tipo_usuario'];?></a>
+            <a class="nav-link text-light" href=""><?php if($_SESSION['tipo_usuario'] == "M")
+            {
+              echo "Usuário Master";
+            } else {
+              echo "Usuário Comum";
+            };?></a>
           </li>
               <li class="nav-item">
               <form action="logout.php" method="POST">
@@ -283,7 +300,7 @@ Floratta Blue é uma fragrância super confortável com o
         <div class="card2">
           <span class="p1">Contato</span>
           <p class="contato-paragrafo">Para qualquer informação, dúvida ou comentário:</p>
-          <p class="contato-paragrafo">(21) 9876-5432</p>
+          <p class="contato-paragrafo">(21) 9999-9999</p>
           <form class="form2">
             <div class="group2">
               <input placeholder="" type="text" id="nameEmpresa" required="" />

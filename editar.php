@@ -73,10 +73,40 @@
       <li class="nav-item">
         <a class="nav-link text-light" href="index.php#endereco">Endereço</a>
       </li>
-      <li class="nav-item">
-        <a class="nav-link text-light" href="./login.php">Área do Cliente</a>
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle text-light" href="#" id="navbarDropdown" 
+            role="button" data-toggle="dropdown" 
+            aria-haspopup="true" aria-expanded="false">
+          Área do Cliente
+        </a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+          <a class="dropdown-item" href="login.php">Acesse sua conta
+          </a>
+          <a class="dropdown-item" href="area_cliente.php">Se torne um cliente
+          </a>
+          <?php if(isset($_SESSION['usuario_logado'])): ?>
+          <a class="dropdown-item" href="altera.php">Altere sua senha
+          </a>
+          <?php endif; ?>
       </li>
-      <li class="nav-item"></li>
+            <?php if(isset($_SESSION['usuario_logado'])): ?>
+              <li class="nav-item">
+            <a class="nav-link text-light" href="#"><?php echo $_SESSION['login'];?></a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link text-light" href=""><?php if($_SESSION['tipo_usuario'] == "M")
+            {
+              echo "Usuário Master";
+            } else {
+              echo "Usuário Comum";
+            };?></a>
+          </li>
+              <li class="nav-item">
+              <form action="logout.php" method="POST">
+              <button type="submit" name="logout" class="log_off">Encerrar sessão</button></li>
+              </form>
+          </li>
+          <?php endif; ?>
     </ul>
   </nav>
   <nav class="navbar navbar-expand-lg navbar-light cabecalho2">
@@ -92,16 +122,18 @@
             <a class="nav-link text-light" href="index.php">Home</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link text-light" href="#produtos">Produtos</a>
+            <a class="nav-link text-light" href="index.php#produtos">Produtos</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link text-light" href="#somos">Quem somos</a>
+            <a class="nav-link text-light" href="index.php#somos">Quem somos</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link text-light" href="#lancamentos">Lançamentos</a>
+            <a class="nav-link text-light" href="index.php#lancamentos">Lançamentos</a>
           </li>
           <li class="nav-item">
-            <a href="listar.php" class="nav-link text-light">Voltar</a>
+            <a href="listar.php" class="nav-link text-light"><svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-arrow-left" viewBox="0 0 16 16">
+  <path fill-rule="evenodd" d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8"/>
+</svg></a>
           </li>
         </ul>
       </nav>

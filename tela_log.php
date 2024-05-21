@@ -81,21 +81,38 @@ if (!isset($_SESSION['usuario_logado']) OR $_SESSION['usuario_logado'] !== true 
             /></a>
           </li>
           <li class="nav-item">
-            <a class="nav-link active text-light" href="#contato">Contato</a>
+            <a class="nav-link active text-light" href="index.php#contato">Contato</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link text-light" href="#endereco">Endereço</a>
+            <a class="nav-link text-light" href="index.php#endereco">Endereço</a>
           </li>
-          <li class="nav-item">
-            <a class="nav-link text-light" href="./login.php"
-              >Área do Cliente</a
-            >
+          <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle text-light" href="#" id="navbarDropdown" 
+            role="button" data-toggle="dropdown" 
+            aria-haspopup="true" aria-expanded="false">
+          Área do Cliente
+        </a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+          <a class="dropdown-item" href="login.php">Acesse sua conta
+          </a>
+          <a class="dropdown-item" href="area_cliente.php">Se torne um cliente
+          </a>
+          <?php if(isset($_SESSION['usuario_logado'])): ?>
+          <a class="dropdown-item" href="altera.php">Altere sua senha
+          </a>
+          <?php endif; ?>
+      </li>
             <?php if(isset($_SESSION['usuario_logado'])): ?>
               <li class="nav-item">
             <a class="nav-link text-light" href="#"><?php echo $_SESSION['login'];?></a>
           </li>
           <li class="nav-item">
-            <a class="nav-link text-light" href=""><?php echo $_SESSION['tipo_usuario'];?></a>
+            <a class="nav-link text-light" href=""><?php if($_SESSION['tipo_usuario'] == "M")
+            {
+              echo "Usuário Master";
+            } else {
+              echo "Usuário Comum";
+            };?></a>
           </li>
               <li class="nav-item">
               <form action="logout.php" method="POST">
@@ -103,7 +120,6 @@ if (!isset($_SESSION['usuario_logado']) OR $_SESSION['usuario_logado'] !== true 
               </form>
           </li>
           <?php endif; ?>
-          <li class="nav-item"></li>
         </ul>
       </nav>
       <nav class="navbar navbar-expand-lg navbar-light cabecalho2">
@@ -119,13 +135,13 @@ if (!isset($_SESSION['usuario_logado']) OR $_SESSION['usuario_logado'] !== true 
             <a class="nav-link text-light" href="index.php">Home</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link text-light" href="#produtos">Produtos</a>
+            <a class="nav-link text-light" href="index.php#produtos">Produtos</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link text-light" href="#somos">Quem somos</a>
+            <a class="nav-link text-light" href="index.php#somos">Quem somos</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link text-light" href="#lancamentos">Lançamentos</a>
+            <a class="nav-link text-light" href="index.php#lancamentos">Lançamentos</a>
           </li>
           <?php if($tipo_usuario == "M"): ?>
           <li class="nav-item dropdown">
@@ -168,18 +184,19 @@ if (!isset($_SESSION['usuario_logado']) OR $_SESSION['usuario_logado'] !== true 
       </div>
 
       <div class="table-responsive">
-      <table class="table">
-        <thead>
+      <table class="table table-hover table-bordered">
+        <thead class="bg-success">
           <tr>
             <th>ID do Log</th>
             <th>Data de Login</th>
             <th>Tipo de 2FA</th>
             <th>Id do Usuário</th>
+            <th>Nome do Usuário</th>
             <th>Status</th>
             <th>Resposta do 2FA</th>
           </tr>
         </thead>
-        <tbody>
+        <tbody class="bg-light">
           <?php
 
 
@@ -193,9 +210,14 @@ if (!isset($_SESSION['usuario_logado']) OR $_SESSION['usuario_logado'] !== true 
           // Calcular o inicio da visualização
           $inicio = ($limite_resultado * $pagina) - $limite_resultado;
 
-          $query_usuarios = "SELECT * FROM tb_Log ORDER BY idUsuario DESC LIMIT $inicio, $limite_resultado";
+          $query_usuarios = "SELECT l.idLog, l.DataLogin, l.Tipo2FA, l.idUsuario, u.NomeCompleto AS NomeUsuario, l.Status, l.Resposta2FA 
+          FROM tb_Log l 
+          INNER JOIN tb_Usuarios u ON l.idUsuario = u.idUsuario 
+          ORDER BY l.idUsuario DESC LIMIT $inicio, $limite_resultado";
           $resultado = $conn->prepare($query_usuarios);
           $resultado->execute();
+
+
           
           if (($resultado) && ($resultado->rowCount() != 0)) {
             while ($row_usuario = $resultado->fetch(PDO::FETCH_ASSOC)) {
@@ -206,6 +228,7 @@ if (!isset($_SESSION['usuario_logado']) OR $_SESSION['usuario_logado'] !== true 
                 <td><?php echo $DataLogin; ?></td>
                 <td><?php echo $Tipo2FA; ?></td>
                 <td><?php echo $idUsuario; ?></td>
+                <td><?php echo $NomeUsuario; ?></td>
                 <td><?php echo $Status; ?></td>
                 <td><?php echo $Resposta2FA; ?></td>
               </tr>

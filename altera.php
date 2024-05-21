@@ -1,5 +1,7 @@
 <?php
 session_start();
+ob_start();
+require_once 'conexao.php';
 
 if (isset($_SESSION['username'])) {
   $tipo_usuario = $_SESSION['tipo_usuario'];
@@ -9,7 +11,6 @@ if (!isset($_SESSION['usuario_logado'])){
   header('Location: login.php');
 }
 
-print_r($_SESSION);
 
 ?>
 <!DOCTYPE html>
@@ -21,8 +22,13 @@ print_r($_SESSION);
 
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
     <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/login.css">
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"
+    />
     <link rel="shortcut icon" href="imagens/iconeR(1).jpg" type="image/x-icon" />
-    <title>O Rafaelo - Mer</title>
+    <title>O Rafaelo - Alterar senha</title>
   </head>
 
   <body>
@@ -65,10 +71,10 @@ print_r($_SESSION);
             /></a>
           </li>
           <li class="nav-item">
-            <a class="nav-link active text-light" href="index.php#contato">Contato</a>
+            <a class="nav-link active text-light" href="#contato">Contato</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link text-light" href="index.php#endereco">Endereço</a>
+            <a class="nav-link text-light" href="index.php">Endereço</a>
           </li>
           <li class="nav-item dropdown">
         <a class="nav-link dropdown-toggle text-light" href="#" id="navbarDropdown" 
@@ -127,7 +133,7 @@ print_r($_SESSION);
           <li class="nav-item">
             <a class="nav-link text-light" href="index.php#lancamentos">Lançamentos</a>
           </li>
-          <?php if($tipo_usuario == "M"): ?>
+          <?php if($tipo_usuario == "Master"): ?>
           <li class="nav-item dropdown">
         <a class="nav-link dropdown-toggle text-light" href="#" id="navbarDropdown" 
             role="button" data-toggle="dropdown" 
@@ -152,10 +158,104 @@ print_r($_SESSION);
         </ul>
       </nav>
     </header>
-    <section>
-        <div class="text-center">
-            <img src="imagens/print_mer.png" alt="Imagem do MER">
+    <div>
+      <p class="p2">Área do Cliente</p>
+    </div>
+    <section class="form_do_fael">
+      <div class="main-form-container">
+        <div class="form-container">
+          <section class="form-header">
+            <h1 class="p4">Alteração de credenciais</h1>
+            <h2 class="p4">Ninguém irá compartilhar seus dados.</h2>
+          </section>
+            <div>
+                <?php
+                // Verifica se está logado
+                if(!isset($_SESSION['usuario_logado'])) {
+                    header("Location: login.php");
+                    exit;
+                }
+
+                $tipo_usuario = isset($_SESSION['tipo_usuario']) ? $_SESSION['tipo_usuario'] : '';
+                $id = isset($_SESSION['id_usuario']) ? $_SESSION['id_usuario'] : null;
+
+                
+                // Verifica se o formulário foi enviado
+                if ($_SERVER["REQUEST_METHOD"] == "POST") {
+                    if (isset($_POST['password']) && isset($_POST['passwordtwo']) ) {
+                        $password = $_POST['password'];
+                        $passwordtwo = $_POST['passwordtwo'];
+
+                        // Se as senhas forem iguais
+                        if($password === $passwordtwo){
+
+                        $senha_hash = password_hash($password, PASSWORD_DEFAULT);
+                        // 
+                        $stmt = $conn->prepare("UPDATE tb_Usuarios SET Senha=:password WHERE idUsuario=:id ");
+                        $stmt->bindParam(':id', $id);
+                        $stmt->bindParam(':password', $senha_hash);
+                        $stmt->execute();
+                        $_SESSION['msg'] = "<p class='msgSuccess'>Senha alterada com sucesso!</p>";
+                        
+                        header("Location: login.php");
+                        
+                        exit;
+
+                        } else
+                        {
+                            echo "Senha não alterada";
+                        }
+                    }
+                    }
+                
+                ?>
+
+            </div>
+          <form class="form" id="form" action="" method="POST">
+            <div class="form-content">
+              <label id="passwordLabel" for="password">Nova senha</label>
+              <i
+                id="seePassword"
+                class="fa fa-eye fa-lg"
+                aria-hidden="true"
+              ></i>
+              <i
+                id="hidePassword"
+                class="fa fa-eye-slash fa-lg"
+                aria-hidden="true"
+              ></i>
+              <input type="password" id="password" placeholder="Digite aqui a sua nova senha..." name="password"  />
+              <small>Mensagem de erro</small>
+            </div>
+
+            <div class="form-content">
+              <label id="passwordLabel" for="passwordtwo">Confirmar senha</label>
+              <i
+                id="seePasswordTwo"
+                class="fa fa-eye fa-lg"
+                aria-hidden="true"
+              ></i>
+              <i
+                id="hidePasswordTwo"
+                class="fa fa-eye-slash fa-lg"
+                aria-hidden="true"
+              ></i>
+              <input type="password" id="passwordtwo" name="passwordtwo" placeholder="Digite novamente sua nova senha..."  />
+              <small>Mensagem de erro</small>
+            </div>
+            <button id="btnLogin" type="submit">Alterar senha</button>
+            <button class="btnLogin" type="reset">Limpar</button>
+          </form>
+          <div class="form-section">
+            <p class="p3">
+              Não tem uma conta? <a href="area_cliente.php">Cadastre-se</a>
+            </p>
+            <p class="p3">
+              Quer alterar sua senha? <a href="area_cliente.php">Altere aqui!</a>
+            </p>
+          </div>
         </div>
+      </div>
     </section>
     <footer>
       <div class="rodape">
@@ -231,6 +331,6 @@ print_r($_SESSION);
       crossorigin="anonymous"
     ></script>
     <script src="js/dark_mode.js"></script>
-    <script src="js/home.js"></script>
+    <script src="js/altera.js"></script>
   </body>
 </html>

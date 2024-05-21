@@ -76,11 +76,18 @@ if (!isset($_SESSION['username'])) {
               >Endereço</a
             >
           </li>
-          <li class="nav-item">
-            <a class="nav-link text-light" href="./login.php"
-              >Área do Cliente</a
-            >
-          </li>
+          <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle text-light" href="#" id="navbarDropdown" 
+            role="button" data-toggle="dropdown" 
+            aria-haspopup="true" aria-expanded="false">
+          Área do Cliente
+        </a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+          <a class="dropdown-item" href="login.php">Acesse sua conta
+          </a>
+          <a class="dropdown-item" href="area_cliente.php">Se torne um cliente
+          </a>
+      </li>
           <li class="nav-item"></li>
         </ul>
       </nav>
@@ -119,14 +126,14 @@ switch($perguntas):
 
     case 1:
         echo"<div>";
-        echo"<p class='p1'>Área do Cliente</p>";
+        echo"<p class='p2'>Área do Cliente</p>";
         echo "</div>";
         echo"<section class='form_do_fael'>";
         echo"<div class='main-form-container'>";
         echo"<div class='form-container'>"; 
         echo"<section class='form-header'>";
-        echo"<h1>Confirme seus dados para realizar o login!</h1>";
-        echo"<h2>Ninguém irá compartilhar seus dados.</h2>";
+        echo"<h1 class='p4'>Confirme seus dados para realizar o login!</h1>";
+        echo"<h2 class='p4'>Ninguém irá compartilhar seus dados.</h2>";
         echo"</section>";
         echo"<div id='msgError'></div>";
         echo"<div id='msgSuccess'></div>";
@@ -139,12 +146,6 @@ switch($perguntas):
         echo"<button id='btnLogin' type='submit'>Entrar</button>";
         echo"</form>";
         echo"<div class='form-section'>";
-        echo"<p>";
-        echo"Não tem uma conta? <a href='area_cliente.php'>Cadastre-se</a>";
-        echo"</p>";
-        echo"<p>";
-        echo"Esqueceu sua senha? <a href='area_cliente.php'>Recupere aqui!</a>";
-        echo"</p>";
         echo"</div>";
         echo"</div>";
         echo"</div>";
@@ -153,14 +154,14 @@ switch($perguntas):
 
     case 2:
         echo"<div>";
-        echo"<p class='p1'>Área do Cliente</p>";
+        echo"<p class='p2'>Área do Cliente</p>";
         echo "</div>";
         echo"<section class='form_do_fael'>";
         echo"<div class='main-form-container'>";
         echo"<div class='form-container'>"; 
         echo"<section class='form-header'>";
-        echo"<h1>Confirme seus dados para realizar o login!</h1>";
-        echo"<h2>Ninguém irá compartilhar seus dados.</h2>";
+        echo"<h1 class='p4'>Confirme seus dados para realizar o login!</h1>";
+        echo"<h2 class='p4'>Ninguém irá compartilhar seus dados.</h2>";
         echo"</section>";
         echo"<div id='msgError'></div>";
         echo"<div id='msgSuccess'></div>";
@@ -173,12 +174,6 @@ switch($perguntas):
         echo"<button id='btnLogin' type='submit'>Entrar</button>";
         echo"</form>";
         echo"<div class='form-section'>";
-        echo"<p>";
-        echo"Não tem uma conta? <a href='area_cliente.php'>Cadastre-se</a>";
-        echo"</p>";
-        echo"<p>";
-        echo"Esqueceu sua senha? <a href='area_cliente.php'>Recupere aqui!</a>";
-        echo"</p>";
         echo"</div>";
         echo"</div>";
         echo"</div>";
@@ -187,14 +182,14 @@ switch($perguntas):
         
         case 3:
             echo"<div>";
-            echo"<p class='p1'>Área do Cliente</p>";
+            echo"<p class='p2'>Área do Cliente</p>";
             echo "</div>";
             echo"<section class='form_do_fael'>";
             echo"<div class='main-form-container'>";
             echo"<div class='form-container'>"; 
             echo"<section class='form-header'>";
-            echo"<h1>Confirme seus dados para realizar o login!</h1>";
-            echo"<h2>Ninguém irá compartilhar seus dados.</h2>";
+            echo"<h1 class='p4'>Confirme seus dados para realizar o login!</h1>";
+            echo"<h2 class='p4'>Ninguém irá compartilhar seus dados.</h2>";
             echo"</section>";
             echo"<div id='msgError'></div>";
             echo"<div id='msgSuccess'></div>";
@@ -207,12 +202,6 @@ switch($perguntas):
             echo"<button id='btnLogin' type='submit'>Entrar</button>";
             echo"</form>";
             echo"<div class='form-section'>";
-            echo"<p>";
-            echo"Não tem uma conta? <a href='area_cliente.php'>Cadastre-se</a>";
-            echo"</p>";
-            echo"<p>";
-            echo"Esqueceu sua senha? <a href='area_cliente.php'>Recupere aqui!</a>";
-            echo"</p>";
             echo"</div>";
             echo"</div>";
             echo"</div>";

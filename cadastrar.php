@@ -74,11 +74,18 @@ require_once "conexao.php";
               >Endereço</a
             >
           </li>
-          <li class="nav-item">
-            <a class="nav-link text-light" href="./login.php"
-              >Área do Cliente</a
-            >
-          </li>
+          <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle text-light" href="#" id="navbarDropdown" 
+            role="button" data-toggle="dropdown" 
+            aria-haspopup="true" aria-expanded="false">
+          Área do Cliente
+        </a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+          <a class="dropdown-item" href="login.php">Acesse sua conta
+          </a>
+          <a class="dropdown-item" href="area_cliente.php">Se torne um cliente
+          </a>
+      </li>
           <li class="nav-item"></li>
         </ul>
       </nav>
@@ -166,7 +173,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
             if($sql->rowCount()) {
                 echo "<p class='p1'>Bem-vindo(a), $username</p>";
-                echo "<p class='p1'>Seu cadastro foi efetuado com sucesso!</p>";
+                $_SESSION['msg'] = "<p class='msgSuccess'>Seu cadastro foi efetuado com sucesso!</p>";
                 echo "<p class='p1'>Você será redirecionado para a tela de login em alguns segundos...</p>";
                 echo "<meta http-equiv='refresh' content='5;url=login.php'>";
             } else {

@@ -76,21 +76,38 @@ $tipo_usuario = isset($_SESSION['tipo_usuario']) ? $_SESSION['tipo_usuario'] : n
             /></a>
           </li>
           <li class="nav-item">
-            <a class="nav-link active text-light" href="#contato">Contato</a>
+            <a class="nav-link active text-light" href="index.php#contato">Contato</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link text-light" href="#endereco">Endereço</a>
+            <a class="nav-link text-light" href="index.php#endereco">Endereço</a>
           </li>
-          <li class="nav-item">
-            <a class="nav-link text-light" href="./login.php"
-              >Área do Cliente</a
-            >
+          <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle text-light" href="#" id="navbarDropdown" 
+            role="button" data-toggle="dropdown" 
+            aria-haspopup="true" aria-expanded="false">
+          Área do Cliente
+        </a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+          <a class="dropdown-item" href="login.php">Acesse sua conta
+          </a>
+          <a class="dropdown-item" href="area_cliente.php">Se torne um cliente
+          </a>
+          <?php if(isset($_SESSION['usuario_logado'])): ?>
+          <a class="dropdown-item" href="altera.php">Altere sua senha
+          </a>
+          <?php endif; ?>
+      </li>
             <?php if(isset($_SESSION['usuario_logado'])): ?>
               <li class="nav-item">
             <a class="nav-link text-light" href="#"><?php echo $_SESSION['login'];?></a>
           </li>
           <li class="nav-item">
-            <a class="nav-link text-light" href=""><?php echo $_SESSION['tipo_usuario'];?></a>
+            <a class="nav-link text-light" href=""><?php if($_SESSION['tipo_usuario'] == "M")
+            {
+              echo "Usuário Master";
+            } else {
+              echo "Usuário Comum";
+            };?></a>
           </li>
               <li class="nav-item">
               <form action="logout.php" method="POST">
@@ -114,13 +131,13 @@ $tipo_usuario = isset($_SESSION['tipo_usuario']) ? $_SESSION['tipo_usuario'] : n
             <a class="nav-link text-light" href="index.php">Home</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link text-light" href="#produtos">Produtos</a>
+            <a class="nav-link text-light" href="index.php#produtos">Produtos</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link text-light" href="#somos">Quem somos</a>
+            <a class="nav-link text-light" href="index.php#somos">Quem somos</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link text-light" href="#lancamentos">Lançamentos</a>
+            <a class="nav-link text-light" href="index.php#lancamentos">Lançamentos</a>
           </li>
           <?php if($tipo_usuario == "M"): ?>
           <li class="nav-item dropdown">
@@ -148,14 +165,14 @@ $tipo_usuario = isset($_SESSION['tipo_usuario']) ? $_SESSION['tipo_usuario'] : n
       </nav>
     </header>
     <div>
-      <p class="p1">Área do Cliente</p>
+      <p class="p2">Área do Cliente</p>
     </div>
     <section class="form_do_fael">
       <div class="main-form-container">
         <div class="form-container">
           <section class="form-header">
-            <h1>Cadastre-se</h1>
-            <h2>Crie sua conta de graça com os dados abaixo</h2>
+            <h1 class="p4">Cadastre-se</h1>
+            <h2 class="p4">Crie sua conta de graça com os dados abaixo</h2>
           </section>
           <div id="msgError"></div>
           <div id="msgSuccess"></div>
@@ -183,11 +200,12 @@ $tipo_usuario = isset($_SESSION['tipo_usuario']) ? $_SESSION['tipo_usuario'] : n
             </div>
 
             <div class="form-content">
-              <label for="gender">Sexo *</label>
+              <label for="gender">Genêro *</label>
               <select name="gender" id="gender">
                 <option value="" disabled selected>Selecione uma opção</option>
                 <option value="Masculino">Masculino</option>
                 <option value="Feminino">Feminino</option>
+                <option value="Outro">Prefiro não responder</option>
               </select>
               <small>Mensagem de erro</small>
             </div>
@@ -384,8 +402,8 @@ $tipo_usuario = isset($_SESSION['tipo_usuario']) ? $_SESSION['tipo_usuario'] : n
 
               <small>Mensagem de erro</small>
             </div>
-            <button class="btnLogin" type="reset">Limpar</button>
             <button type="submit">Cadastrar</button>
+            <button class="btnLogin" type="reset">Limpar</button>
           </form>
         </div>
       </div>

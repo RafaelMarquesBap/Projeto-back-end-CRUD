@@ -133,6 +133,23 @@
   color: #272727;
 }
 
+.p2 {
+  display: flex;
+  justify-content: center;
+  font-family: sans-serif;
+  font-weight: normal;
+  font-size: xx-large;
+  color: #272727;
+}
+
+.p3 {
+  font-size: 20px;
+}
+
+.p4 {
+  font-size: x-large;
+}
+
 .alinhamentoRodape {
   margin-top: 80px;
 }
@@ -1625,4 +1642,31 @@ body {
   padding: 1.4em;
   border-radius: 4px;
   font-size: 2em;
+}
+
+/* Botao de pesquisa */
+.search-box {
+  display: flex;
+  justify-content: center;
+  padding-bottom: 15px;
+}
+
+.table-bg {
+  border-radius: 10px;
+}
+
+.borda-tabela {
+  border-collapse: collapse; /* Colapsa as bordas das células */
+  width: 100%; /* Define a largura da tabela */
+}
+
+.borda-tabela th,
+.borda-tabela td {
+  border: 1px solid black; /* Adiciona uma borda sólida de 1px em todas as células e cabeçalhos */
+  padding: 8px; /* Adiciona um espaço interno para melhor legibilidade */
+  text-align: left; /* Alinha o texto à esquerda */
+}
+
+.borda-tabela th {
+  background-color: #f2f2f2; /* Adiciona um fundo cinza para os cabeçalhos */
 }

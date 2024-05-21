@@ -87,16 +87,33 @@ $tipo_usuario = isset($_SESSION['tipo_usuario']) ? $_SESSION['tipo_usuario'] : n
           <li class="nav-item">
             <a class="nav-link text-light" href="#endereco">Endereço</a>
           </li>
-          <li class="nav-item">
-            <a class="nav-link text-light" href="./login.php"
-              >Área do Cliente</a
-            >
+          <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle text-light" href="#" id="navbarDropdown" 
+            role="button" data-toggle="dropdown" 
+            aria-haspopup="true" aria-expanded="false">
+          Área do Cliente
+        </a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+          <a class="dropdown-item" href="login.php">Acesse sua conta
+          </a>
+          <a class="dropdown-item" href="area_cliente.php">Se torne um cliente
+          </a>
+          <?php if(isset($_SESSION['usuario_logado'])): ?>
+          <a class="dropdown-item" href="altera.php">Altere sua senha
+          </a>
+          <?php endif; ?>
+      </li>
             <?php if(isset($_SESSION['usuario_logado'])): ?>
               <li class="nav-item">
             <a class="nav-link text-light" href="#"><?php echo $_SESSION['login'];?></a>
           </li>
           <li class="nav-item">
-            <a class="nav-link text-light" href=""><?php echo $_SESSION['tipo_usuario'];?></a>
+            <a class="nav-link text-light" href=""><?php if($_SESSION['tipo_usuario'] == "M")
+            {
+              echo "Usuário Master";
+            } else {
+              echo "Usuário Comum";
+            };?></a>
           </li>
               <li class="nav-item">
               <form action="logout.php" method="POST">
@@ -104,7 +121,6 @@ $tipo_usuario = isset($_SESSION['tipo_usuario']) ? $_SESSION['tipo_usuario'] : n
               </form>
           </li>
           <?php endif; ?>
-          <li class="nav-item"></li>
         </ul>
       </nav>
       <nav class="navbar navbar-expand-lg navbar-light cabecalho2">
@@ -120,13 +136,13 @@ $tipo_usuario = isset($_SESSION['tipo_usuario']) ? $_SESSION['tipo_usuario'] : n
             <a class="nav-link text-light" href="index.php">Home</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link text-light" href="#produtos">Produtos</a>
+            <a class="nav-link text-light" href="index.php#produtos">Produtos</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link text-light" href="#somos">Quem somos</a>
+            <a class="nav-link text-light" href="index.php#somos">Quem somos</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link text-light" href="#lancamentos">Lançamentos</a>
+            <a class="nav-link text-light" href="index.php#lancamentos">Lançamentos</a>
           </li>
           <?php if($tipo_usuario == "M"): ?>
           <li class="nav-item dropdown">
@@ -154,18 +170,23 @@ $tipo_usuario = isset($_SESSION['tipo_usuario']) ? $_SESSION['tipo_usuario'] : n
       </nav>
     </header>
     <div>
-      <p class="p1">Área do Cliente</p>
+      <p class="p2">Área do Cliente</p>
     </div>
     <section class="form_do_fael">
       <div class="main-form-container">
         <div class="form-container">
           <section class="form-header">
-            <h1>Login</h1>
-            <h2>Ninguém irá compartilhar seus dados.</h2>
+            <h1 class="p4">Login</h1>
+            <h2 class="p4">Ninguém irá compartilhar seus dados.</h2>
           </section>
           <div>
           <?php
 
+        if(isset($_SESSION['msg']))
+        {
+          echo $_SESSION['msg'];
+          unset($_SESSION['msg']);
+        }
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if (isset($_POST['login']) && isset($_POST['password'])) {
@@ -200,15 +221,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     exit(); // Terminar o script após o redirecionamento
                 } else {
                     // Senha incorreta, exibir uma mensagem de erro
-                    echo "<p class='msgError'>Erro: Login e/ou senha incorretos!</p>";
+                    $_SESSION['msg']  = "<p class='msgError'>Erro: Login e/ou senha incorretos!</p>";
                 }
             } else {
                 // Login não encontrado, exibir uma mensagem de erro
-                echo "<p class='msgError'>Erro: Login e/ou senha incorretos!</p>";
+                $_SESSION['msg'] = "<p class='msgError'>Erro: Login e/ou senha incorretos!</p>";
             }
         }            
     } else {
-        echo "<p class='msgError'>Erro: Necessário preencher todos os campos!</p>";
+        $_SESSION['msg'] = "<p class='msgError'>Erro: Necessário preencher todos os campos!</p>";
     }
 }
 ?>
@@ -236,15 +257,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
               <input type="password" id="password" name="password" placeholder=""  />
               <small>Mensagem de erro</small>
             </div>
-            <button class="btnLogin" type="reset">Limpar</button>
             <button id="btnLogin" type="submit">Entrar</button>
+            <button class="btnLogin" type="reset">Limpar</button>
           </form>
           <div class="form-section">
-            <p>
+            <p class="p3">
               Não tem uma conta? <a href="area_cliente.php">Cadastre-se</a>
             </p>
-            <p>
-              Esqueceu sua senha? <a href="area_cliente.php">Recupere aqui!</a>
+            <p class="p3">
+              Quer alterar sua senha? <a href="altera.php">Altere aqui!</a>
             </p>
           </div>
         </div>
