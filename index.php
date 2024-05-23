@@ -11,8 +11,6 @@ if (!isset($_SESSION['usuario_logado']) OR $_SESSION['usuario_logado'] !== true 
   session_unset();
 }
 
-// Se chegou aqui, o usuário está autenticado e passou pelo 2FA
-print_r($_SESSION);
 
 ?>
 <!DOCTYPE html>

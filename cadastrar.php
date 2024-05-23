@@ -3,11 +3,79 @@ session_start();
 ob_start();
 require_once "conexao.php";
 
-if(!isset($_SESSION['usuario_autenticado'])){
-  header("Location: login.php");
-  exit();
-}
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    if (!empty($_POST["username"]) && !empty($_POST["birthday"]) && !empty($_POST["gender"]) && !empty($_POST["momname"]) && !empty($_POST["cpf"]) && !empty($_POST["celnumber"]) && !empty($_POST["telnumber"]) && !empty($_POST["cep"]) && !empty($_POST["address"]) && !empty($_POST["bairro"]) && !empty($_POST["cidade"]) && !empty($_POST["uf"]) && !empty($_POST["login"]) && !empty($_POST["password"]) && !empty($_POST["passwordtwo"])) {
+        
+        $username = $_POST["username"];
+        $birthday = $_POST["birthday"];
+        $gender = $_POST["gender"];
+        $momname = $_POST["momname"];
+        $cpf = $_POST["cpf"];
+        $celnumber = $_POST["celnumber"];
+        $telnumber = $_POST["telnumber"];
+        $cep = $_POST["cep"];
+        $address = $_POST["address"];
+        $complemento = isset($_POST["complemento"]) ? $_POST["complemento"] : "";
+        $bairro = $_POST["bairro"];
+        $cidade = $_POST["cidade"];
+        $uf = $_POST["uf"];
+        $login = $_POST["login"];
+        $password = $_POST["password"];
+        $passwordtwo = $_POST["passwordtwo"];
+        $tipo_usuario = 'C';
 
+        if ($password !== $passwordtwo) {
+            echo "<p class='p1'>As senhas não coincidem!</p>";
+            echo "<meta http-equiv='refresh' content='3;url=area_cliente.php'>";
+            exit();
+        }
+
+        $senha_hash = password_hash($password, PASSWORD_DEFAULT);
+
+        try {
+            $sql = $conn->prepare("INSERT INTO tb_Usuarios (NomeCompleto, Tipo_usuario, DataNasc, Sexo, NomeMaterno, CPF, Telefone_Celular, Telefone_Fixo, CEP, Endereco, Complemento, Bairro, Cidade, UF, Login, Senha) VALUES (:username, :tipo_usuario, :birthday, :gender, :momname, :cpf, :celnumber, :telnumber, :cep, :address, :complemento, :bairro, :cidade, :uf, :login, :senha)");
+
+            $sql->bindValue(':username', $username);
+            $sql->bindValue(':tipo_usuario', $tipo_usuario);
+            $sql->bindValue(':birthday', $birthday);
+            $sql->bindValue(':gender', $gender);
+            $sql->bindValue(':momname', $momname);
+            $sql->bindValue(':cpf', $cpf);
+            $sql->bindValue(':celnumber', $celnumber);
+            $sql->bindValue(':telnumber', $telnumber);
+            $sql->bindValue(':cep', $cep);
+            $sql->bindValue(':address', $address);
+            $sql->bindValue(':complemento', $complemento);
+            $sql->bindValue(':bairro', $bairro);
+            $sql->bindValue(':cidade', $cidade);
+            $sql->bindValue(':uf', $uf);
+            $sql->bindValue(':login', $login);
+            $sql->bindValue(':senha', $senha_hash);
+
+            if ($sql->execute()) {
+                $_SESSION['msg'] = "<p class='msgSuccess'>Seu cadastro foi efetuado com sucesso!</p>";
+              
+              header("Location: login.php");
+                
+                exit();
+            } else {
+                $_SESSION['msg'] = "<p class='msgError'>Usuário não cadastrado!</p>";
+                echo "<p class='p1'>Usuário não cadastrado!</p>";
+                echo "<p class='p1'>Retornando a página de cadastro...</p>";
+                echo "<meta http-equiv='refresh' content='3;url=area_cliente.php'>";
+                exit();
+            }
+        } catch (PDOException $e) {
+            $_SESSION['msg'] = "Erro ao executar a consulta: " . $e->getMessage();
+            echo "<p class='p1'>Erro ao executar a consulta: " . $e->getMessage() . "</p>";
+        }
+    } else {
+        $_SESSION['msg'] = "<p class='msgError'>Erro: Necessário preencher todos os campos!</p>";
+        echo "<p class='p1'>Erro: Necessário preencher todos os campos!</p>";
+        echo "<p class='p1'>Retornando à página de cadastro...</p>";
+        echo "<meta http-equiv='refresh' content='3;url=area_cliente.php'>";
+    }
+}
 ?>
 
 <html lang="pt-br">
@@ -123,82 +191,6 @@ if(!isset($_SESSION['usuario_autenticado'])){
     </header>
   
     <div>
-    <?php
-if (!isset($_SESSION['username'])) {
-  $tipo_usuario = $_SESSION['tipo_usuario'];
-  header("Location: login.php");
-}
-
-// Verifica se os dados foram enviados via método POST
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    // Verifica se todos os campos obrigatórios foram preenchidos
-    if (isset($_POST["username"]) && isset($_POST["birthday"]) && isset($_POST["gender"]) && isset($_POST["momname"]) && isset($_POST["cpf"]) && isset($_POST["celnumber"]) && isset($_POST["telnumber"]) && isset($_POST["cep"]) && isset($_POST["address"]) && isset($_POST["bairro"]) && isset($_POST["cidade"]) && isset($_POST["uf"]) && isset($_POST["login"]) && isset($_POST["password"]) && isset($_POST["passwordtwo"])) {
-        
-        $username = $_POST["username"];
-        $birthday = $_POST["birthday"];
-        $gender = $_POST["gender"];
-        $momname = $_POST["momname"];
-        $cpf = $_POST["cpf"];
-        $celnumber = $_POST["celnumber"];
-        $telnumber = $_POST["telnumber"];
-        $cep = $_POST["cep"];
-        $address = $_POST["address"];
-        $complemento = isset($_POST["complemento"]) ? $_POST["complemento"] : "";
-        $bairro = $_POST["bairro"];
-        $cidade = $_POST["cidade"];
-        $uf = $_POST["uf"];
-        $login = $_POST["login"];
-        $password = $_POST["password"];
-        $passwordtwo = $_POST["passwordtwo"];
-        $tipo_usuario = 'C';
-        
-        // Criptografar a senha
-        $senha_hash = password_hash($password, PASSWORD_DEFAULT);
-        
-        try {
-            $sql = $conn->prepare("INSERT INTO tb_Usuarios(NomeCompleto, Tipo_usuario, DataNasc, Sexo, NomeMaterno, CPF, Telefone_Celular, Telefone_Fixo, CEP, Endereco, Complemento, Bairro, Cidade, UF, Login, Senha) VALUES (:username, :tipo_usuario, :birthday, :gender, :momname, :cpf, :celnumber, :telnumber, :cep, :address, :complemento, :bairro, :cidade, :uf, :login, :senha)");
-
-            $sql->bindValue(':username', $username);
-            $sql->bindValue(':tipo_usuario', $tipo_usuario);
-            $sql->bindValue(':birthday', $birthday);
-            $sql->bindValue(':gender', $gender);
-            $sql->bindValue(':momname', $momname);
-            $sql->bindValue(':cpf', $cpf);
-            $sql->bindValue(':celnumber', $celnumber);
-            $sql->bindValue(':telnumber', $telnumber);
-            $sql->bindValue(':cep', $cep);
-            $sql->bindValue(':address', $address);
-            $sql->bindValue(':complemento', $complemento);
-            $sql->bindValue(':bairro', $bairro);
-            $sql->bindValue(':cidade', $cidade);
-            $sql->bindValue(':uf', $uf);
-            $sql->bindValue(':login', $login);
-            $sql->bindValue(':senha', $senha_hash);
-
-            $sql->execute();
-
-            if($sql->rowCount()) {
-                echo "<p class='p1'>Bem-vindo(a), $username</p>";
-                $_SESSION['msg'] = "<p class='msgSuccess'>Seu cadastro foi efetuado com sucesso!</p>";
-                echo "<p class='p1'>Você será redirecionado para a tela de login em alguns segundos...</p>";
-                echo "<meta http-equiv='refresh' content='5;url=login.php'>";
-            } else {
-                echo "<p class='p1'>Usuário não cadastrado!</p>";
-                echo "<p class='p1'>Retornando a página de cadastro...</p>";
-                echo "<meta http-equiv='refresh' content='3;url=area_cliente.php'>";
-            }
-        } catch (PDOException $e) {
-
-            echo "Erro ao executar a consulta: " . $e->getMessage();
-        }
-    } else {
-        echo "<p class='p1'>Erro: Necessário preencher todos os campos!</p>";
-        echo "<p class='p1'>Retornando à página de cadastro...</p>";
-        echo "<meta http-equiv='refresh' content='3;url=area_cliente.php'>";
-    }
-}
-?>
-
     </div>
   </body>
 </html>

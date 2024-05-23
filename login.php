@@ -181,7 +181,6 @@ $tipo_usuario = isset($_SESSION['tipo_usuario']) ? $_SESSION['tipo_usuario'] : n
           </section>
           <div>
           <?php
-
         if(isset($_SESSION['msg']))
         {
           echo $_SESSION['msg'];
