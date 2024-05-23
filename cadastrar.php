@@ -2,6 +2,12 @@
 session_start();
 ob_start();
 require_once "conexao.php";
+
+if(!isset($_SESSION['usuario_autenticado'])){
+  header("Location: login.php");
+  exit();
+}
+
 ?>
 
 <html lang="pt-br">

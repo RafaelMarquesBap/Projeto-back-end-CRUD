@@ -2,26 +2,103 @@
 session_start();
 ob_start();
 require_once "conexao.php";
+
+// Verificação de sessão e autenticação do usuário
 if (!isset($_SESSION['username'])) {
-  $tipo_usuario = $_SESSION['tipo_usuario'];
-  header("Location: login.php");
+    header("Location: login.php");
+    exit();
 }
 
-if (isset($_SESSION['username'])) {
-  $tipo_usuario = $_SESSION['tipo_usuario'];
+$tipo_usuario = $_SESSION['tipo_usuario'];
+
+// Verificação do tipo de usuário
+if ($tipo_usuario !== "M") {
+    header("Location: index.php");
+    exit();
 }
 
-if($_SESSION['tipo_usuario'] !== "M"){
-  header("Location: index.php");
+// Verificação do 2FA
+if (!isset($_SESSION['usuario_logado']) || $_SESSION['usuario_logado'] !== true || !isset($_SESSION['usuario_autenticado']) || $_SESSION['usuario_autenticado'] !== true) {
+    unset($_SESSION['usuario_logado']);
+    unset($_SESSION['usuario_autenticado']);
+    header('Location: login.php');
+    exit();
 }
 
-// Verifica se o usuário está autenticado e passou pelo 2FA
-if (!isset($_SESSION['usuario_logado']) OR $_SESSION['usuario_logado'] !== true OR !isset($_SESSION['usuario_autenticado']) OR $_SESSION['usuario_autenticado'] !== true) {
-  session_unset();
-  header('Location: login.php');
+// Receber o numero da página
+$pagina_atual = filter_input(INPUT_GET, "page", FILTER_SANITIZE_NUMBER_INT);
+$pagina = (!empty($pagina_atual)) ? $pagina_atual : 1;
+
+// Setar a quantidade de registros por página
+$limite_resultado = 10;
+
+// Calcular o início da visualização
+$inicio = ($limite_resultado * $pagina) - $limite_resultado;
+
+// Fazer a pesquisa
+$search_nome = !empty($_GET['search_nome']) ? $_GET['search_nome'] : '';
+$search_id = !empty($_GET['search_id']) ? $_GET['search_id'] : '';
+
+$query = "SELECT l.idLog, l.DataLogin, l.Tipo2FA, l.idUsuario, u.NomeCompleto AS NomeUsuario, l.Status, l.Resposta2FA 
+          FROM tb_Log l 
+          JOIN tb_Usuarios u ON l.idUsuario = u.idUsuario 
+          WHERE 1=1";
+
+if ($search_nome) {
+    $query .= " AND u.NomeCompleto LIKE :search_nome";
 }
 
+if ($search_id) {
+    $query .= " AND l.idUsuario = :search_id";
+}
+
+$query .= " ORDER BY l.idLog DESC 
+            LIMIT :inicio, :limite";
+
+$stmt = $conn->prepare($query);
+
+if ($search_nome) {
+    $stmt->bindValue(':search_nome', '%' . $search_nome . '%', PDO::PARAM_STR);
+}
+
+if ($search_id) {
+    $stmt->bindValue(':search_id', $search_id, PDO::PARAM_INT);
+}
+
+$stmt->bindValue(':inicio', $inicio, PDO::PARAM_INT);
+$stmt->bindValue(':limite', $limite_resultado, PDO::PARAM_INT);
+$stmt->execute();
+$resultado = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+// Contar a quantidade de registros no BD para paginação
+$count_query = "SELECT COUNT(l.idLog) AS num_result 
+                FROM tb_Log l 
+                JOIN tb_Usuarios u ON l.idUsuario = u.idUsuario 
+                WHERE 1=1";
+
+if ($search_nome) {
+    $count_query .= " AND u.NomeCompleto LIKE :search_nome";
+}
+
+if ($search_id) {
+    $count_query .= " AND l.idUsuario = :search_id";
+}
+
+$count_stmt = $conn->prepare($count_query);
+
+if ($search_nome) {
+    $count_stmt->bindValue(':search_nome', '%' . $search_nome . '%', PDO::PARAM_STR);
+}
+
+if ($search_id) {
+    $count_stmt->bindValue(':search_id', $search_id, PDO::PARAM_INT);
+}
+
+$count_stmt->execute();
+$row_qnt_registros = $count_stmt->fetch(PDO::FETCH_ASSOC);
+$qnt_pagina = ceil($row_qnt_registros['num_result'] / $limite_resultado);
 ?>
+
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
@@ -33,7 +110,7 @@ if (!isset($_SESSION['usuario_logado']) OR $_SESSION['usuario_logado'] !== true 
   <link rel="stylesheet" href="css/area_cliente.css">
   <link rel="shortcut icon" href="imagens/iconeR(1).jpg" type="image/x-icon">
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
-  <title>O Rafaelo - Tela Log</title>
+  <title>O Rafaelo - Logs</title>
   <style>
     /* Quebrar o texto que ficou vazando da pagina */
     .table td:nth-child(15) {
@@ -43,50 +120,31 @@ if (!isset($_SESSION['usuario_logado']) OR $_SESSION['usuario_logado'] !== true 
 </head>
 <body>
 <header id="home">
-      <nav class="cabecalho1">
-        <ul class="nav justify-content-end aling-items-center">
-          <li>
-            <div class="wrapper">
-              <input
-                type="checkbox"
-                name="checkbox"
-                class="switch"
-                id="darkModeToggle"
-              />
-              <label for="darkModeToggle"></label>
-            </div>
-          </li>
-          <li class="nav-item">
-            <a
-              class="nav-link active text-light"
-              target="_blank"
-              href="https://chat.whatsapp.com/GQYq1I96XdB2KIFWcR5UPe"
-              ><img
-                src="imagens/whatsapp.png"
-                alt="ìcone do Whatsapp"
-                width="40"
-                height="40"
-            /></a>
-          </li>
-          <li class="nav-item">
-            <a
-              class="nav-link active text-light"
-              target="_blank"
-              href="https://www.linkedin.com/in/rafael-marques-baptista/"
-              ><img
-                src="imagens/linkedin.png"
-                alt="ícone do linkedin "
-                width="40"
-                height="40"
-            /></a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link active text-light" href="index.php#contato">Contato</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link text-light" href="index.php#endereco">Endereço</a>
-          </li>
-          <li class="nav-item dropdown">
+  <nav class="cabecalho1">
+    <ul class="nav justify-content-end aling-items-center">
+      <li>
+        <div class="wrapper">
+          <input type="checkbox" name="checkbox" class="switch" id="darkModeToggle"/>
+          <label for="darkModeToggle"></label>
+        </div>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link active text-light" target="_blank" href="https://chat.whatsapp.com/GQYq1I96XdB2KIFWcR5UPe">
+          <img src="imagens/whatsapp.png" alt="ìcone do Whatsapp" width="40" height="40"/>
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link active text-light" target="_blank" href="https://www.linkedin.com/in/rafael-marques-baptista/">
+          <img src="imagens/linkedin.png" alt="ícone do linkedin " width="40" height="40"/>
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link active text-light" href="index.php#contato">Contato</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link text-light" href="index.php#endereco">Endereço</a>
+      </li>
+      <li class="nav-item dropdown">
         <a class="nav-link dropdown-toggle text-light" href="#" id="navbarDropdown" 
             role="button" data-toggle="dropdown" 
             aria-haspopup="true" aria-expanded="false">
@@ -120,178 +178,120 @@ if (!isset($_SESSION['usuario_logado']) OR $_SESSION['usuario_logado'] !== true 
               </form>
           </li>
           <?php endif; ?>
-        </ul>
-      </nav>
-      <nav class="navbar navbar-expand-lg navbar-light cabecalho2">
-        <a class="" href=""
-          ><img
-            src="imagens/logoR.png"
-            alt="Logo da empresa O Rafaelo"
-            width="100%"
-            height="40"
-        /></a>
-        <ul class="navbar-nav">
-          <li class="nav-item">
-            <a class="nav-link text-light" href="index.php">Home</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link text-light" href="index.php#produtos">Produtos</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link text-light" href="index.php#somos">Quem somos</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link text-light" href="index.php#lancamentos">Lançamentos</a>
-          </li>
-          <?php if($tipo_usuario == "M"): ?>
-          <li class="nav-item dropdown">
-        <a class="nav-link dropdown-toggle text-light" href="#" id="navbarDropdown" 
-            role="button" data-toggle="dropdown" 
-            aria-haspopup="true" aria-expanded="false">
-          Master
-        </a>
-        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-          <a class="dropdown-item" href="listar.php">Visualizar Usuários
-          </a>
-          <a class="dropdown-item" href="area_cliente.php">Cadastrar Usuários
-          </a>
-          <div class="dropdown-divider"></div>
-          <a class="dropdown-item" href="tela_log.php">Log</a>
-        </div>
-      </li>
-      <?php endif; ?>
-      <?php if(isset($_SESSION['usuario_logado'])): ?>
+    </ul>
+  </nav>
+  <nav class="navbar navbar-expand-lg navbar-light cabecalho2">
+    <a class="" href="">
+      <img src="imagens/logoR.png" alt="Logo da empresa O Rafaelo" width="100%" height="40"/>
+    </a>
+    <ul class="navbar-nav">
       <li class="nav-item">
-            <a class="nav-link text-light" href="mer.php">MER</a>
-          </li>
+        <a class="nav-link text-light" href="index.php">Home</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link text-light" href="index.php#produtos">Produtos</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link text-light" href="index.php#somos">Quem somos</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link text-light" href="index.php#lancamentos">Lançamentos</a>
+      </li>
+      <?php if($tipo_usuario == "M"): ?>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle text-light" href="#" id="navbarDropdown" 
+             role="button" data-toggle="dropdown" 
+             aria-haspopup="true" aria-expanded="false">
+            Master
+          </a>
+          <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+            <a class="dropdown-item" href="listar.php">Visualizar Usuários</a>
+            <a class="dropdown-item" href="tela_log.php">Visualizar Log</a>
+          </div>
+        </li>
       <?php endif; ?>
-        </ul>
-      </nav>
-    </header>
-
-<div class="container">
-  <div class="row">
-    <div class="col-md-12">
-      <h2 class="p1">Tela de Log</h2>
-      <div>
-      <?php 
-      if(isset($_SESSION['msg'])) {
-        echo $_SESSION['msg'];
-        unset($_SESSION['msg']);
-      }
-      
-      ?>
-      </div>
-
-      <div class="table-responsive">
-      <table class="table table-hover table-bordered">
-        <thead class="bg-success">
-          <tr>
-            <th>ID do Log</th>
-            <th>Data de Login</th>
-            <th>Tipo de 2FA</th>
-            <th>Id do Usuário</th>
-            <th>Nome do Usuário</th>
-            <th>Status</th>
-            <th>Resposta do 2FA</th>
-          </tr>
-        </thead>
-        <tbody class="bg-light">
-          <?php
-
-
-          // Receber o numero da pagina
-          $pagina_atual = filter_input(INPUT_GET, "page", FILTER_SANITIZE_NUMBER_INT);
-          $pagina = (!empty($pagina_atual)) ? $pagina_atual : 1;
-
-          // Setar a quantidade de registros por pagina
-          $limite_resultado = 10;
-
-          // Calcular o inicio da visualização
-          $inicio = ($limite_resultado * $pagina) - $limite_resultado;
-
-          $query_usuarios = "SELECT l.idLog, l.DataLogin, l.Tipo2FA, l.idUsuario, u.NomeCompleto AS NomeUsuario, l.Status, l.Resposta2FA 
-          FROM tb_Log l 
-          INNER JOIN tb_Usuarios u ON l.idUsuario = u.idUsuario 
-          ORDER BY l.idUsuario DESC LIMIT $inicio, $limite_resultado";
-          $resultado = $conn->prepare($query_usuarios);
-          $resultado->execute();
-
-
-          
-          if (($resultado) && ($resultado->rowCount() != 0)) {
-            while ($row_usuario = $resultado->fetch(PDO::FETCH_ASSOC)) {
-              extract($row_usuario);
-          ?>
-              <tr>
-                <td><?php echo $idLog; ?></td>
-                <td><?php echo $DataLogin; ?></td>
-                <td><?php echo $Tipo2FA; ?></td>
-                <td><?php echo $idUsuario; ?></td>
-                <td><?php echo $NomeUsuario; ?></td>
-                <td><?php echo $Status; ?></td>
-                <td><?php echo $Resposta2FA; ?></td>
-              </tr>
-          <?php
+    </ul>
+  </nav>
+</header>
+<main>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-12">
+        <h2 class="p1">Registros de Log</h2>
+        <form method="GET" action="tela_log.php">
+          <div class="form-row">
+            <div class="col">
+              <input type="text" name="search_nome" class="form-control" placeholder="Pesquisar por Nome" value="<?php echo $search_nome; ?>">
+            </div>
+            <div class="col">
+              <input type="text" name="search_id" class="form-control" placeholder="Pesquisar por ID" value="<?php echo $search_id; ?>">
+            </div>
+            <div class="col">
+              <button type="submit" class="btn btn-primary">Pesquisar</button>
+            </div>
+          </div>
+        </form>
+        <br>
+        <table class="table table-striped table-bordered">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Data Login</th>
+              <th>Tipo 2FA</th>
+              <th>ID Usuário</th>
+              <th>Nome Usuário</th>
+              <th>Status</th>
+              <th>Resposta 2FA</th>
+            </tr>
+          </thead>
+          <tbody>
+            <?php
+            foreach ($resultado as $row) {
+                echo "<tr>";
+                echo "<td>" . $row['idLog'] . "</td>";
+                echo "<td>" . $row['DataLogin'] . "</td>";
+                echo "<td>" . $row['Tipo2FA'] . "</td>";
+                echo "<td>" . $row['idUsuario'] . "</td>";
+                echo "<td>" . $row['NomeUsuario'] . "</td>";
+                echo "<td>" . $row['Status'] . "</td>";
+                echo "<td>" . $row['Resposta2FA'] . "</td>";
+                echo "</tr>";
             }
-          } else {
-            echo "<tr><td colspan='15'>Nenhum usuário encontrado!</td></tr>";
-          }
-          ?>
-        </tbody>
-      </table>
+            ?>
+          </tbody>
+        </table>
+        <nav aria-label="Page navigation example">
+          <ul class="pagination justify-content-center">
+            <?php
+            $max_links = 2;
+            echo "<li class='page-item'><a class='page-link' href='tela_log.php?page=1'>Primeira</a></li>";
+            for ($pag_ant = $pagina - $max_links; $pag_ant <= $pagina - 1; $pag_ant++) {
+              if ($pag_ant >= 1) {
+                echo "<li class='page-item'><a class='page-link' href='tela_log.php?page=$pag_ant'>$pag_ant</a></li>";
+              }
+            }
+            echo "<li class='page-item active'><a class='page-link' href='#'>$pagina</a></li>";
+            for ($pag_dep = $pagina + 1; $pag_dep <= $pagina + $max_links; $pag_dep++) {
+              if ($pag_dep <= $qnt_pagina) {
+                echo "<li class='page-item'><a class='page-link' href='tela_log.php?page=$pag_dep'>$pag_dep</a></li>";
+              }
+            }
+            echo "<li class='page-item'><a class='page-link' href='tela_log.php?page=$qnt_pagina'>Última</a></li>";
+            ?>
+          </ul>
+        </nav>
       </div>
-      <?php
-      // Contar a quantidade de registros no BD
-      $query_qnt_registros = "SELECT COUNT(idUsuario) AS num_result FROM tb_Usuarios";
-      $result_qnt_registros = $conn->prepare($query_qnt_registros);
-      $result_qnt_registros->execute();
-      $row_qnt_registros = $result_qnt_registros->fetch(PDO::FETCH_ASSOC);
-
-      // Quantidade de pagina
-      $qnt_pagina = ceil($row_qnt_registros['num_result'] / $limite_resultado);
-
-      // Maximo de link
-      $maximo_link = 2;
-
-      echo "<a href='tela_log.php?page=1' class='paginacao-link'>Primeira</a> ";
-
-      for ($pagina_anterior = $pagina - $maximo_link; $pagina_anterior <= $pagina - 1; $pagina_anterior++) {
-        if ($pagina_anterior >= 1) {
-          echo "<a href='tela_log.php?page=$pagina_anterior'class='paginacao-link'>$pagina_anterior</a> ";
-        }
-      }
-
-      echo "$pagina ";
-
-      for ($proxima_pagina = $pagina + 1; $proxima_pagina <= $pagina + $maximo_link; $proxima_pagina++) {
-        if ($proxima_pagina <= $qnt_pagina) {
-          echo "<a href='tela_log.php?page=$proxima_pagina' class='paginacao-link'>$proxima_pagina</a> ";
-        }
-      }
-
-      echo "<a href='tela_log.php?page=$qnt_pagina' class='paginacao-link'>Última</a> ";
-      ?>
     </div>
   </div>
-</div>
-
-<script
-      src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
-      integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
-      crossorigin="anonymous"
-    ></script>
-    <script
-      src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"
-      integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
-      crossorigin="anonymous"
-    ></script>
-    <script
-      src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"
-      integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy"
-      crossorigin="anonymous"
-    ></script>
-    <script src="js/dark_mode.js"></script>
-    <script src="js/apagar.js"></script>
+</main>
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" 
+        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" 
+        crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" 
+        integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLa7f9C2hg65VtZ1pHw/o0U6ghlN1ghKaUknh" 
+        crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" 
+        integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" 
+        crossorigin="anonymous"></script>
 </body>
 </html>
