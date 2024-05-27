@@ -178,12 +178,12 @@ $tipo_usuario = isset($_SESSION['tipo_usuario']) ? $_SESSION['tipo_usuario'] : n
           <div id="msgSuccess"></div>
           <form class="form" id="form" action="cadastrar.php" method="POST">
             <div class="form-content">
-              <label for="username">Nome do usuário *</label>
+              <label for="username">Nome Completo *</label>
               <input
                 type="text"
                 name="username"
                 id="username"
-                placeholder="Digite o nome do usuário..."
+                placeholder="Digite o seu nome completo..."
               />
               <small>Mensagem de erro</small>
             </div>
@@ -274,6 +274,16 @@ $tipo_usuario = isset($_SESSION['tipo_usuario']) ? $_SESSION['tipo_usuario'] : n
                 name="address"
                 id="address"
                 placeholder="Digite o seu endereço..."
+              />
+              <small>Mensagem de erro</small>
+            </div>
+            <div class="form-content">
+              <label for="number">Número</label>
+              <input
+                type="number"
+                name="number"
+                id="number"
+                placeholder="Digite o número do seu endereço..."
               />
               <small>Mensagem de erro</small>
             </div>

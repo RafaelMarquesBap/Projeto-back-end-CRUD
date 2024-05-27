@@ -1,6 +1,7 @@
 <?php
           require_once "conexao.php";
           session_start();
+          ob_start();
 
           //Pega o id do usuario pela URL
         $id = filter_input(INPUT_GET, "id", FILTER_SANITIZE_NUMBER_INT);
@@ -145,11 +146,6 @@
       <h2 class="p1">Editar usuário</h2>
 
       <?php
-require_once "conexao.php";
-
-
-// Pega o id do usuário pela URL
-$id = filter_input(INPUT_GET, "id", FILTER_SANITIZE_NUMBER_INT);
 
 if (empty($id)) {
     // Se não tiver id, volta para o listar
@@ -171,7 +167,6 @@ if (($result_usuario) && ($result_usuario->rowCount() != 0)) {
 }
 ?>
 
-<!-- Seu HTML continua aqui -->
 
 <?php
 // Receber os dados do formulário
@@ -193,7 +188,7 @@ if (!empty($dados['EditUsuario'])) {
 
         $query_usuario_edit = "UPDATE tb_Usuarios SET NomeCompleto=:nome_completo, DataNasc=:nascimento, Sexo=:sexo, 
             NomeMaterno=:nome_materno, CPF=:cpf, Telefone_Celular=:tel_cel, 
-            Telefone_Fixo=:tel_fixo, CEP=:cep, Endereco=:endereco, 
+            Telefone_Fixo=:tel_fixo, CEP=:cep, Endereco=:endereco, Numero = :numero,
             Complemento=:complemento, Bairro=:bairro, Cidade=:cidade, UF=:uf, Login=:login
             WHERE idUsuario=:id";
 
@@ -207,6 +202,7 @@ if (!empty($dados['EditUsuario'])) {
         $edit_usuario->bindParam(':tel_fixo', $dados['Telefone_Fixo']);
         $edit_usuario->bindParam(':cep', $dados['CEP']);
         $edit_usuario->bindParam(':endereco', $dados['Endereco']);
+        $edit_usuario->bindParam(':numero', $dados['Numero']);
         $edit_usuario->bindParam(':complemento', $dados['Complemento']);
         $edit_usuario->bindParam(':bairro', $dados['Bairro']);
         $edit_usuario->bindParam(':cidade', $dados['Cidade']);
@@ -215,11 +211,12 @@ if (!empty($dados['EditUsuario'])) {
         $edit_usuario->bindParam(':id', $dados['idUsuario']);
 
         if ($edit_usuario->execute()) {
-          $_SESSION['msg'] = "<p class='msgSuccess'>Usuário atualizado com sucesso!</p>";
+            $_SESSION['msg'] = "<p class='msgSuccess'>Usuário atualizado com sucesso!</p>";
             header("Location: listar.php");
             exit();
         } else {
             echo "<p class='msgError'>Erro: Usuário não atualizado!</p>";
+
         }
     }
 }
@@ -305,6 +302,14 @@ if (!empty($dados['EditUsuario'])) {
                 if(isset($dados['Endereco'])) {
                     echo $dados['Endereco'];
                 } elseif(isset($row_usuario['Endereco'])) { echo $row_usuario['Endereco']; } ?>" required>
+        </div>
+        <div class="form-content">
+        <label for="Number">Número:</label>
+        <input type="number" class="form-control" name="Numero" id="Number" 
+        placeholder="Number" value="<?php 
+                if(isset($dados['Numero'])) {
+                    echo $dados['Numero'];
+                } elseif(isset($row_usuario['Numero'])) { echo $row_usuario['Numero']; } ?>" required>
         </div>
         <div class="form-content">
         <label for="Complemento">Complemento:</label>

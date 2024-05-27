@@ -15,6 +15,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $telnumber = $_POST["telnumber"];
         $cep = $_POST["cep"];
         $address = $_POST["address"];
+        $number = $_POST["number"];
         $complemento = isset($_POST["complemento"]) ? $_POST["complemento"] : "";
         $bairro = $_POST["bairro"];
         $cidade = $_POST["cidade"];
@@ -33,7 +34,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $senha_hash = password_hash($password, PASSWORD_DEFAULT);
 
         try {
-            $sql = $conn->prepare("INSERT INTO tb_Usuarios (NomeCompleto, Tipo_usuario, DataNasc, Sexo, NomeMaterno, CPF, Telefone_Celular, Telefone_Fixo, CEP, Endereco, Complemento, Bairro, Cidade, UF, Login, Senha) VALUES (:username, :tipo_usuario, :birthday, :gender, :momname, :cpf, :celnumber, :telnumber, :cep, :address, :complemento, :bairro, :cidade, :uf, :login, :senha)");
+            $sql = $conn->prepare("INSERT INTO tb_Usuarios (NomeCompleto, Tipo_usuario, DataNasc, Sexo, NomeMaterno, CPF, Telefone_Celular, Telefone_Fixo, CEP, Endereco, Numero, Complemento, Bairro, Cidade, UF, Login, Senha) VALUES (:username, :tipo_usuario, :birthday, :gender, :momname, :cpf, :celnumber, :telnumber, :cep, :address, :numero, :complemento, :bairro, :cidade, :uf, :login, :senha)");
 
             $sql->bindValue(':username', $username);
             $sql->bindValue(':tipo_usuario', $tipo_usuario);
@@ -45,6 +46,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $sql->bindValue(':telnumber', $telnumber);
             $sql->bindValue(':cep', $cep);
             $sql->bindValue(':address', $address);
+            $sql->bindValue(':numero', $number);
             $sql->bindValue(':complemento', $complemento);
             $sql->bindValue(':bairro', $bairro);
             $sql->bindValue(':cidade', $cidade);

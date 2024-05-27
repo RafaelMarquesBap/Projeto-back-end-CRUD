@@ -16,6 +16,7 @@ const celnumber = document.getElementById("celnumber");
 
 const cep = document.querySelector("#cep");
 const address = document.querySelector("#address");
+const number = document.querySelector("#number");
 const bairro = document.querySelector("#bairro");
 const complemento = document.querySelector("#complemento");
 const uf = document.querySelector("#uf");
@@ -346,6 +347,10 @@ address.addEventListener("blur", () => {
   checkInputAddress();
 });
 
+number.addEventListener("blur", () => {
+  checkInputNumber();
+});
+
 complemento.addEventListener("blur", () => {
   checkInputComplemento();
 });
@@ -442,6 +447,12 @@ function checkInputBirthday() {
     return false;
   }
 
+  // Verifica se a data de nascimento é inferior ao ano de 1900
+  if (dataNascimento.getFullYear() < 1900) {
+    errorInput(birthday, "Data de nascimento inválida.");
+    validBirthday = false;
+    return false;
+  }
   // Se todas as verificações passarem
   successInput(birthday);
   validBirthday = true;
@@ -613,6 +624,17 @@ function checkInputAddress() {
   }
 }
 
+//========================== VERIFICAÇÃO DO NÚMERO (ENDEREÇO) =============
+
+function checkInputNumber() {
+  const numberValue = number.value;
+
+  if (numberValue.trim() !== "") {
+    successInput(number);
+    return true;
+  }
+}
+
 //==================== VERIFICAÇÃO COMPLEMENTO ==============
 function checkInputComplemento() {
   const complementoValue = complemento.value;
@@ -728,6 +750,7 @@ function checkForm() {
   const isPasswordTwoValid = checkInputPasswordTwo();
   const isCepValid = checkInputCep();
   const isAddressValid = checkInputAddress();
+  const isNumberValid = checkInputNumber();
   const isComplementoValid = checkInputComplemento();
   const isBairroValid = checkInputBairro();
   const isCidadeValid = checkInputCidade();
@@ -747,6 +770,7 @@ function checkForm() {
     isPasswordTwoValid &&
     isCepValid &&
     isAddressValid &&
+    isNumberValid &&
     isComplementoValid &&
     isBairroValid &&
     isCidadeValid &&
@@ -762,7 +786,7 @@ const formItems = form.querySelectorAll(".form-content");
 const isValid = [...formItems].every((item) => {
   return item.className === "form-content success";
 });
-if (isValid) {
+if (!isValid) {
   /*let userList = JSON.parse(localStorage.getItem("userList") || "[]");
 
   userList.push({

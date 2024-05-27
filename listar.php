@@ -221,6 +221,7 @@ $qnt_pagina = ceil($row_qnt_registros['num_result'] / $limite_resultado);
           <th scope="col">Telefone Fixo</th>
           <th scope="col">CEP</th>
           <th scope="col">Endereço</th>
+          <th scope="col">Número</th>
           <th scope="col">Bairro</th>
           <th scope="col">Cidade</th>
           <th scope="col">UF</th>
@@ -254,6 +255,7 @@ $qnt_pagina = ceil($row_qnt_registros['num_result'] / $limite_resultado);
               <td><?php echo $Telefone_Fixo; ?></td>
               <td><?php echo $CEP; ?></td>
               <td><?php echo $Endereco; ?></td>
+              <td><?php echo $Numero; ?></td>
               <td><?php echo $Bairro; ?></td>
               <td><?php echo $Cidade; ?></td>
               <td><?php echo $UF; ?></td>

@@ -11,7 +11,6 @@ if (!isset($_SESSION['usuario_logado']) OR $_SESSION['usuario_logado'] !== true 
   session_unset();
 }
 
-
 ?>
 <!DOCTYPE html>
 <html lang="pt-br">

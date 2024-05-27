@@ -150,9 +150,10 @@ $tipo_usuario = isset($_SESSION['tipo_usuario']) ? $_SESSION['tipo_usuario'] : n
     <?php
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $birthday = $_POST['birthday'];
-    $momname = $_POST['momname'];    
-    $cep = $_POST['cep'];
+    $birthday = isset($_POST['birthday']) ? $_POST['birthday'] : null;
+    $momname = isset($_POST['momname']) ? $_POST['momname'] : null;
+    $cep = isset($_POST['cep']) ? $_POST['cep'] : null;
+    
     $perguntas = isset($_SESSION['pergunta']) ? $_SESSION['pergunta'] : rand(1, 3); // Operador ternário
 
     $resposta = null;
@@ -210,7 +211,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $_SESSION['usuario_logado'] = true;
         $_SESSION['tentativas'] = 0;
         $_SESSION['usuario_autenticado'] = true;
-        $status = "OK"; 
+        $status = "Autenticado"; 
         header("Refresh:2;URL = index.php");
           } else {
         // Se a autenticação falhar
@@ -218,14 +219,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         if ($_SESSION['tentativas'] >= 3) {
             $_SESSION['msg'] = "<p class='msgError'>Quantidade de tentativas excedidas! Tente novamente.</p>";
             unset($_SESSION['tentativas']);
-            $status = "Falha"; 
+            $status = "Não autenticado"; 
             header("Location: login.php");
         } else {
             echo "<h1 class='p1'>Autenticação incorreta! Tente novamente.</h1>";
             echo "<div class='text-center'>";
             echo "<a href='2fa.php' class='btn btn-info btn-lg'>Voltar</a>";
             echo "</div>";
-            $status = "Falha";
+            $status = "Não autenticado";
                 // Inserção na tabela tb_Log
     $sql = "INSERT INTO tb_Log (DataLogin, Tipo2FA, idUsuario, Status, Resposta2FA) VALUES (?, ?, ?, ?, ?)";
     $stmt2 = $conn->prepare($sql);
@@ -237,7 +238,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $stmt2->execute();
 
     // Redirecionamento apenas se a autenticação for ok
-    if ($status === "OK") {
+    if ($status === "Autenticado") {
         
     }
             exit(); 

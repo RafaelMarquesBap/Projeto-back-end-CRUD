@@ -181,11 +181,10 @@ $tipo_usuario = isset($_SESSION['tipo_usuario']) ? $_SESSION['tipo_usuario'] : n
           </section>
           <div>
           <?php
-        if(isset($_SESSION['msg']))
-        {
-          echo $_SESSION['msg'];
-          unset($_SESSION['msg']);
-        }
+if(isset($_SESSION['msg'])) {
+    echo $_SESSION['msg'];
+    unset($_SESSION['msg']);
+}
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if (isset($_POST['login']) && isset($_POST['password'])) {
@@ -196,20 +195,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             echo "<p class='msgError'>Erro: Necessário preencher todos os campos!</p>";
         } else {
             // Buscar a senha armazenada no banco de dados para o login fornecido
-            $stmt = $conn->prepare("SELECT Senha FROM tb_Usuarios WHERE Login = :login");
+            $stmt = $conn->prepare("SELECT * FROM tb_Usuarios WHERE Login = :login");
             $stmt->bindParam(':login', $login);
             $stmt->execute();
-            $senhaArmazenada = $stmt->fetchColumn();
+            $usuario = $stmt->fetch(PDO::FETCH_ASSOC);
 
-            if ($senhaArmazenada) {
-                // Senha encontrada, comparar com a senha digitada usando password_verify()
-                if (password_verify($password, $senhaArmazenada)) {
-                    // Senha correta, buscar os detalhes do usuário
-                    $stmt = $conn->prepare("SELECT * FROM tb_Usuarios WHERE Login = :login");
-                    $stmt->bindParam(':login', $login);
-                    $stmt->execute();
-                    $usuario = $stmt->fetch(PDO::FETCH_ASSOC);
-                    
+            if ($usuario) {
+                // Verifica se o login é o usuário master
+                if ($login === 'admin1' && $password === 'admin123') {
                     // Definir as variáveis de sessão
                     $_SESSION['id_usuario'] = $usuario['idUsuario'];
                     $_SESSION['login'] = $usuario['Login'];
@@ -217,21 +210,41 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     $_SESSION['tipo_usuario'] = $usuario['Tipo_usuario'];
                     $_SESSION['usuario_logado'] = true;
                     header("Location: 2fa.php");
-                    exit(); // Terminar o script após o redirecionamento
+                    exit();
                 } else {
-                    // Senha incorreta, exibir uma mensagem de erro
-                    $_SESSION['msg']  = "<p class='msgError'>Erro: Login e/ou senha incorretos!</p>";
+                    // Senha encontrada, comparar com a senha digitada usando password_verify()
+                    $senhaArmazenada = $usuario['Senha'];
+                    if (password_verify($password, $senhaArmazenada)) {
+                        // Senha correta, buscar os detalhes do usuário
+                        $_SESSION['id_usuario'] = $usuario['idUsuario'];
+                        $_SESSION['login'] = $usuario['Login'];
+                        $_SESSION['username'] = $usuario['NomeCompleto'];
+                        $_SESSION['tipo_usuario'] = $usuario['Tipo_usuario'];
+                        $_SESSION['usuario_logado'] = true;
+                        header("Location: 2fa.php");
+                        exit();
+                    } else {
+                        // Senha incorreta, exibir uma mensagem de erro
+                        $_SESSION['msg']  = "<p class='msgError'>Erro: Login e/ou senha incorretos!</p>";
+                        header("Location: login.php");
+                        exit();
+                    }
                 }
             } else {
                 // Login não encontrado, exibir uma mensagem de erro
                 $_SESSION['msg'] = "<p class='msgError'>Erro: Login e/ou senha incorretos!</p>";
+                header("Location: login.php");
+                exit();
             }
         }            
     } else {
         $_SESSION['msg'] = "<p class='msgError'>Erro: Necessário preencher todos os campos!</p>";
+        header("Location: login.php");
+        exit();
     }
 }
 ?>
+
 
           </div>
           <form class="form" id="form" action="" method="POST">

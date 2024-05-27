@@ -16,6 +16,7 @@ const celnumber = document.getElementById("Telefone_Celular");
 
 const cep = document.getElementById("CEP");
 const address = document.getElementById("Endereco");
+const number = document.getElementById("Number");
 const bairro = document.getElementById("Bairro");
 const complemento = document.getElementById("Complemento");
 const uf = document.getElementById("UF");
@@ -291,6 +292,10 @@ address.addEventListener("blur", () => {
   checkInputAddress();
 });
 
+number.addEventListener("blur", () => {
+  checkInputNumber();
+});
+
 complemento.addEventListener("blur", () => {
   checkInputComplemento();
 });
@@ -352,16 +357,40 @@ function checkInputUsername() {
 // ----------------VERIFICAR SE DATA DE NASCIMENTO ESTÁ CORRETO-----------------------
 function checkInputBirthday() {
   const birthdayValue = birthday.value;
+  const dataNascimento = new Date(birthdayValue);
+  const dataAtual = new Date();
 
+  // Verifica se o valor está vazio
   if (birthdayValue === "") {
     errorInput(birthday, "Data de nascimento é obrigatória.");
     validBirthday = false;
     return false;
-  } else {
-    successInput(birthday);
-    validBirthday = true;
-    return true;
   }
+
+  // Verifica se a data é válida
+  if (isNaN(dataNascimento.getTime())) {
+    errorInput(birthday, "Data de nascimento inválida.");
+    validBirthday = false;
+    return false;
+  }
+
+  // Verifica se a data de nascimento é no futuro
+  if (dataNascimento > dataAtual) {
+    errorInput(birthday, "Data de nascimento inválida.");
+    validBirthday = false;
+    return false;
+  }
+
+  // Verifica se a data de nascimento é inferior ao ano de 1900
+  if (dataNascimento.getFullYear() < 1900) {
+    errorInput(birthday, "Data de nascimento inválida.");
+    validBirthday = false;
+    return false;
+  }
+  // Se todas as verificações passarem
+  successInput(birthday);
+  validBirthday = true;
+  return true;
 }
 
 function checkInputGender() {
@@ -371,8 +400,15 @@ function checkInputGender() {
     errorInput(gender, "Sexo é obrigatório.");
     validGender = false;
     return false;
-  } else if (genderValue !== "Feminino" && genderValue !== "Masculino") {
-    errorInput(gender, "Sexo só pode ser Feminino ou Masculino.");
+  } else if (
+    genderValue !== "Feminino" &&
+    genderValue !== "Masculino" &&
+    genderValue !== "Prefiro não responder."
+  ) {
+    errorInput(
+      gender,
+      "Sexo só pode ser Feminino, Masculino ou Prefiro não responder."
+    );
     validGender = false;
     return false;
   } else {
@@ -531,6 +567,16 @@ function checkInputAddress() {
   }
 }
 
+// =================== VERIFICAÇÃO NÚMERO ===========
+function checkInputNumber() {
+  const numberValue = number.value;
+
+  if (numberValue.trim() !== "") {
+    successInput(number);
+    return true;
+  }
+}
+
 //==================== VERIFICAÇÃO COMPLEMENTO ==============
 function checkInputComplemento() {
   const complementoValue = complemento.value;
@@ -638,6 +684,7 @@ function validateForm() {
   const isTelNumberValid = checkInputTelNumber();
   const isCepValid = checkInputCep();
   const isAddressValid = checkInputAddress();
+  const isNumberValid = checkInputNumber();
   const isComplementoValid = checkInputComplemento();
   const isBairroValid = checkInputBairro();
   const isCidadeValid = checkInputCidade();
@@ -656,6 +703,7 @@ function validateForm() {
     isTelNumberValid &&
     isCepValid &&
     isAddressValid &&
+    isNumberValid &&
     isComplementoValid &&
     isBairroValid &&
     isCidadeValid &&

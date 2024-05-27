@@ -9,8 +9,6 @@ if (!isset($_SESSION['usuario_logado'])){
   header('Location: login.php');
 }
 
-print_r($_SESSION);
-
 ?>
 <!DOCTYPE html>
 <html lang="pt-br">

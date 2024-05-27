@@ -175,8 +175,8 @@ if (isset($_SESSION['username'])) {
   </div>
 </div>
     <div class="table-responsive">
-      <table class="table">
-        <thead>
+      <table class="table table-bordered talbe-hover">
+        <thead class="bg-success">
           <tr>
             <th>#</th>
             <th>Nome Completo</th>
@@ -188,6 +188,7 @@ if (isset($_SESSION['username'])) {
             <th>Telefone Fixo</th>
             <th>CEP</th>
             <th>Endereço</th>
+            <th>Número</th>
             <th>Bairro</th>
             <th>Cidade</th>
             <th>UF</th>
@@ -195,7 +196,7 @@ if (isset($_SESSION['username'])) {
             <th>Senha</th>
           </tr>
         </thead>
-        <tbody>
+        <tbody class="bg-light">
         <?php
   //Faz o select do usuario com o mesmo id do visualizar
     $query_usuario = "SELECT * FROM tb_Usuarios WHERE idUsuario = $id LIMIT 1";
@@ -226,6 +227,7 @@ if (isset($_SESSION['username'])) {
           <td><?php echo $Telefone_Fixo; ?></td>
           <td><?php echo $CEP; ?></td>
           <td><?php echo $Endereco; ?></td>
+          <td><?php echo $Numero; ?></td>
           <td><?php echo $Bairro; ?></td>
           <td><?php echo $Cidade; ?></td>
           <td><?php echo $UF; ?></td>

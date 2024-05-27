@@ -88,6 +88,7 @@ $count_stmt = $conn->prepare($count_query);
 
 if ($search_nome) {
     $count_stmt->bindValue(':search_nome', '%' . $search_nome . '%', PDO::PARAM_STR);
+    
 }
 
 if ($search_id) {
@@ -232,8 +233,8 @@ $qnt_pagina = ceil($row_qnt_registros['num_result'] / $limite_resultado);
           </div>
         </form>
         <br>
-        <table class="table table-striped table-bordered">
-          <thead>
+        <table class="table table-hover table-bordered">
+          <thead class="bg-success">
             <tr>
               <th>ID</th>
               <th>Data Login</th>
@@ -244,7 +245,7 @@ $qnt_pagina = ceil($row_qnt_registros['num_result'] / $limite_resultado);
               <th>Resposta 2FA</th>
             </tr>
           </thead>
-          <tbody>
+          <tbody class="bg-light">
             <?php
             foreach ($resultado as $row) {
                 echo "<tr>";
