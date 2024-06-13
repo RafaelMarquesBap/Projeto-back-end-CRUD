@@ -207,7 +207,7 @@ $qnt_pagina = ceil($row_qnt_registros['num_result'] / $limite_resultado);
           </a>
           <div class="dropdown-menu" aria-labelledby="navbarDropdown">
             <a class="dropdown-item" href="listar.php">Visualizar Usuários</a>
-            <a class="dropdown-item" href="tela_log.php">Visualizar Log</a>
+            <a class="dropdown-item" href="tela_log.php">Log</a>
           </div>
         </li>
       <?php endif; ?>
@@ -294,5 +294,6 @@ $qnt_pagina = ceil($row_qnt_registros['num_result'] / $limite_resultado);
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" 
         integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" 
         crossorigin="anonymous"></script>
+        <script src="js/dark_mode.js"></script>
 </body>
 </html>

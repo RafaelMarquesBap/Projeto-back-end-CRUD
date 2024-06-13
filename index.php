@@ -11,6 +11,8 @@ if (!isset($_SESSION['usuario_logado']) OR $_SESSION['usuario_logado'] !== true 
   session_unset();
 }
 
+$tipo_usuario = isset($_SESSION['tipo_usuario']) ? $_SESSION['tipo_usuario'] : null;
+
 ?>
 <!DOCTYPE html>
 <html lang="pt-br">
@@ -137,8 +139,6 @@ if (!isset($_SESSION['usuario_logado']) OR $_SESSION['usuario_logado'] !== true 
         </a>
         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
           <a class="dropdown-item" href="listar.php">Visualizar Usuários
-          </a>
-          <a class="dropdown-item" href="area_cliente.php">Cadastrar Usuários
           </a>
           <div class="dropdown-divider"></div>
           <a class="dropdown-item" href="tela_log.php">Log</a>

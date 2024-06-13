@@ -360,5 +360,6 @@ if (!empty($dados['EditUsuario'])) {
 </div>
 
 <script src="js/editar.js"></script>
+<script src="js/dark_mode.js"></script>
 </body>
 </html>

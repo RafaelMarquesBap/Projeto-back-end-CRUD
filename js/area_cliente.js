@@ -481,10 +481,6 @@ function checkInputMomName() {
     errorInput(momname, "Nome materno é obrigatório.");
     validMomName = false;
     return false;
-  } else if (momnameValue.length < 6) {
-    errorInput(momname, "O nome materno precisa ter no minimo 6 caracteres.");
-    validMomName = false;
-    return false;
   } else {
     successInput(momname);
     validMomName = true;

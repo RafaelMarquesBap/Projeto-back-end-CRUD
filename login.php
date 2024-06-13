@@ -154,8 +154,6 @@ $tipo_usuario = isset($_SESSION['tipo_usuario']) ? $_SESSION['tipo_usuario'] : n
         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
           <a class="dropdown-item" href="listar.php">Visualizar Usuários
           </a>
-          <a class="dropdown-item" href="area_cliente.php">Cadastrar Usuários
-          </a>
           <div class="dropdown-divider"></div>
           <a class="dropdown-item" href="tela_log.php">Log</a>
         </div>
@@ -362,32 +360,3 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <script src="js/login.js"></script>
   </body>
 </html>
-
-<?php
-
-
-
-/*if(isset($_POST['login'])) {
-
-  $login = ($conn, $_POST['login']);
-  $password = ($conn, $_POST['password']);
-
-  $sql = "SELECT * FROM tb_Usuarios WHERE Login = '$login' AND Senha = '$password'";
-  echo "<br><h6>$sql</h6>";
-
-  if($resultado = mysqli_query($conn, $sql)) {
-    if($num_registros = mysqli_num_rows($resultado)) {
-
-      $linha = mysqli_fetch_assoc($resultado);
-      session_start();
-      $_SESSION['login'] = $login;
-      header("Location: 2fa.php");
-
-    } else {
-      echo "Login inválido!";
-    }
-}
-}*/
-
-
-?>

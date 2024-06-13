@@ -152,8 +152,6 @@ if (isset($_SESSION['username'])) {
         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
           <a class="dropdown-item" href="listar.php">Visualizar Usuários
           </a>
-          <a class="dropdown-item" href="area_cliente.php">Cadastrar Usuários
-          </a>
           <div class="dropdown-divider"></div>
           <a class="dropdown-item" href="tela_log.php">Log</a>
         </div>
@@ -245,5 +243,6 @@ if (isset($_SESSION['username'])) {
   </div>
 </div>
 
+<script src="js/dark_mode.js"></script>
 </body>
 </html>

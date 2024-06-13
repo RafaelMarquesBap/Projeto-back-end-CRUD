@@ -135,8 +135,6 @@ if (!isset($_SESSION['usuario_logado'])){
         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
           <a class="dropdown-item" href="listar.php">Visualizar Usuários
           </a>
-          <a class="dropdown-item" href="area_cliente.php">Cadastrar Usuários
-          </a>
           <div class="dropdown-divider"></div>
           <a class="dropdown-item" href="tela_log.php">Log</a>
         </div>
